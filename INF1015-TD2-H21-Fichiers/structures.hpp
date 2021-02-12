@@ -18,7 +18,7 @@ public :
 	ListeActeurs(int capacite, int nElements, std::unique_ptr<std::unique_ptr<Acteur>[]> elements);
 private:
 	int capacite, nElements;
-	std::unique_ptr<std::unique_ptr<Acteur>[]> elements; // Pointeur vers un tableau de Acteur*, chaque Acteur* pointant vers un Acteur.
+	std::unique_ptr<std::shared_ptr<Acteur>[]> elements; // Pointeur vers un tableau de Acteur*, chaque Acteur* pointant vers un Acteur.
 };
 
 ListeActeurs::ListeActeurs() {
@@ -27,7 +27,7 @@ ListeActeurs::ListeActeurs() {
 	this->elements = nullptr;
 }
 
-ListeActeurs::ListeActeurs(int capacite, int nElements, std::unique_ptr<std::unique_ptr<Acteur>[]>elements) {
+ListeActeurs::ListeActeurs(int capacite, int nElements, std::unique_ptr<std::shared_ptr<Acteur>[]>elements) {
 	this->capacite = capacite;
 	this->nElements = nElements;
 	this->elements = move(elements);
