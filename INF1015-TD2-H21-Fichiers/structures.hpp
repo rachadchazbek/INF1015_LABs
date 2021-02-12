@@ -3,6 +3,7 @@
 
 #include <string>
 #include <memory>
+using namespace std;
 
 struct Film; struct Acteur; // Permet d'utiliser les types alors qu'ils seront défini après.
 
