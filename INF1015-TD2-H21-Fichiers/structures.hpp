@@ -60,7 +60,7 @@ this->acteurs = acteurs;
 
 ostream& operator<<(ostream& os, const Film& film)
 {
-	os << film.titre;
+	os << film.titre << " ";
 	return os;
 }
 
