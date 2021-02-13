@@ -3,7 +3,7 @@
 
 #include <string>
 #include <memory>
-using namespace std;
+usisng namespace std;
 
 struct Film; struct Acteur; // Permet d'utiliser les types alors qu'ils seront défini après.
 
@@ -15,7 +15,7 @@ struct ListeFilms {
 class ListeActeurs {
 public : 
 	ListeActeurs();
-	ListeActeurs(int capacite, int nElements, std::unique_ptr<std::unique_ptr<Acteur>[]> elements);
+	ListeActeurs(int capacite, int nElements, std::unique_ptr<std::shared_ptr<Acteur>[]> elements);
 private:
 	int capacite, nElements;
 	std::unique_ptr<std::shared_ptr<Acteur>[]> elements; // Pointeur vers un tableau de Acteur*, chaque Acteur* pointant vers un Acteur.
@@ -27,7 +27,7 @@ ListeActeurs::ListeActeurs() {
 	this->elements = nullptr;
 }
 
-ListeActeurs::ListeActeurs(int capacite, int nElements, std::unique_ptr<std::shared_ptr<Acteur>[]>elements) {
+ListeActeurs::ListeActeurs(int capacite, int nElements, std::unique_ptr<std::unique_ptr<Acteur>[]>elements) {
 	this->capacite = capacite;
 	this->nElements = nElements;
 	this->elements = move(elements);
@@ -38,6 +38,7 @@ ListeActeurs::ListeActeurs(int capacite, int nElements, std::unique_ptr<std::sha
 public :
 	Film();
 	Film(string titre, string realisateur, ListeActeurs acteurs);
+	friend ostream& operator<<(ostream& os, const Film& film);
 
 private :
 	std::string titre, realisateur; // Titre et nom du réalisateur (on suppose qu'il n'y a qu'un réalisateur).
@@ -45,18 +46,23 @@ private :
 	ListeActeurs acteurs;
 };
 
-Film:Film() {
+Film::Film() {
  this->titre = "";
  this->realisateur = "";
  this->acteurs = ListeActeurs ListeActeurs;
  }
 
-Film:Film(string titre, string realisateur, ListeActeurs acteurs) {
+Film::Film(string titre, string realisateur, ListeActeurs acteurs) {
 this->titre = titre;
 this->realisateur = realisateur;
 this->acteurs = acteurs;
 }
 
+ostream& operator<<(ostream& os, const Film& film)
+{
+	os << film.titre;
+	return os;
+}
 
 struct Acteur
 {
