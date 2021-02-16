@@ -44,6 +44,9 @@ class ListeActeurs {
 public : 
 	ListeActeurs();
 	ListeActeurs(int capacite, int nElements, std::unique_ptr<std::shared_ptr<Acteur>[]> elements);
+	void setElements(Acteur** s) {elements = s;}
+        Acteur** getElements(){return elements;}
+	
 private:
 	int capacite, nElements;
 	std::unique_ptr<std::shared_ptr<Acteur>[]> elements; // Pointeur vers un tableau de Acteur*, chaque Acteur* pointant vers un Acteur.
@@ -67,6 +70,10 @@ public :
 	Film();
 	Film(string titre, string realisateur, ListeActeurs acteurs);
 	friend ostream& operator<<(ostream& os, const Film& film);
+	void setTitre(string s) {titre = s;}
+        string getTitre() {return titre;}
+        void setActeurs(ListeActeurs s) {acteurs = s;}
+        ListeActeurs getActeurs() {return acteurs;}
 
 private :
 	std::string titre, realisateur; // Titre et nom du réalisateur (on suppose qu'il n'y a qu'un réalisateur).
@@ -97,6 +104,8 @@ class Acteur
 public :
 	Acteur();
 	Acteur(string nom, int anneeNaissance, char sexe, ListeFilms joueDans);
+	void setNom(string s) {nom = s;}
+        string getNom() {return nom;}
 
 private :
 	std::string nom; int anneeNaissance; char sexe;
