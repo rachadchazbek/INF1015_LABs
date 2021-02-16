@@ -268,13 +268,16 @@ int main()
 	afficherFilmographieActeur(listeFilms, "Benedict Cumberbatch");
 	
 	// CHAP 7 - 8
-	Film skylien = *(listeFilms[0]);
-	skylien.titre = "Skylien";
+    
+        Film skylien = *(listeFilms[0]);
+	skylien.setTitre("Skylien");
 
-	*(skylien.acteurs.elements) = *(listeFilms[1].acteurs.elements);
-	((*(skylien.acteurs.elements))->nom) = "Daniel Wroughton Craig";
+	*(skylien.getActeurs().getElements()) = *((*(listeFilms[1])).getActeurs().getElements()); 
+	
+	(*(*(skylien.getActeurs().getElements()))).setNom("Daniel Wroughton Craig");
+	
 	for (int i = 0; i < 2; ++i){
-	cout << "Nom du Film : " << *(listeFilms[i]).titre << ", premier acteur du Film :  " << *(*(listeFilms[i]).acteurs.elements);
+	cout << "Nom du Film : " << (*(listeFilms[i])).getTitre() << ", premier acteur du Film :  " << (*(*((*(listeFilms[i])).getActeurs().getElements()))).getNom() << " ";
 	}
 	
 	// Détruit et enlève le premier film de la liste (Alien).
