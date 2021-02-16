@@ -140,7 +140,8 @@ Film* lireFilm(istream& fichier, ListeFilms& listeFilms)
 
 	Film* filmp = new Film(film); //NOTE: On aurait normalement fait le "new" au début de la fonction pour directement mettre les informations au bon endroit; on le fait ici pour que le code ci-dessus puisse être directement donné aux étudiants dans le TD2 sans qu'ils aient le "new" déjà écrit.  On aurait alors aussi un nom "film" pour le pointeur, pour suivre le guide de codage; on a mis un suffixe "p", contre le guide de codage, pour le différencier de "film".
 	cout << "Création Film " << film.titre << endl;
-	filmp->acteurs.elements = new Acteur*[filmp->acteurs.nElements];
+	filmp->acteurs.elements = std::unique_ptr<std::shared_ptr<Acteur>[]> elements(new std::unique_ptr<Acteur>[50]);
+
 	for (Acteur*& acteur : spanListeActeurs(filmp->acteurs)) {
 		acteur = lireActeur(fichier, listeFilms);
 		acteur->joueDans.ajouterFilm(filmp);
@@ -187,7 +188,7 @@ void detruireFilm(Film* film)
 	cout << "Destruction Film " << film->titre << endl;
 	delete[] film->acteurs.elements;
 	delete film;
-}
+} 
 //]
 
 // Fonction pour détruire une ListeFilms et tous les films qu'elle contient.
