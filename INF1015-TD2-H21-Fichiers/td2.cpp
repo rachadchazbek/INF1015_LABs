@@ -267,6 +267,16 @@ int main()
 	// Affiche la liste des films où Benedict Cumberbatch joue.  Il devrait y avoir Le Hobbit et Le jeu de l'imitation.
 	afficherFilmographieActeur(listeFilms, "Benedict Cumberbatch");
 	
+	// CHAP 7 - 8
+	Film skylien = *(listeFilms[0]);
+	skylien.titre = "Skylien";
+
+	*(skylien.acteurs.elements) = *(listeFilms[1].acteurs.elements);
+	((*(skylien.acteurs.elements))->nom) = "Daniel Wroughton Craig";
+	for (int i = 0; i < 2; ++i){
+	cout << "Nom du Film : " << *(listeFilms[i]).titre << ", premier acteur du Film :  " << *(*(listeFilms[i]).acteurs.elements);
+	}
+	
 	// Détruit et enlève le premier film de la liste (Alien).
 	detruireFilm(listeFilms.enSpan()[0]);
 	listeFilms.enleverFilm(listeFilms.enSpan()[0]);
