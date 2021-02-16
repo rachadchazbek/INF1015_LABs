@@ -3,14 +3,42 @@
 
 #include <string>
 #include <memory>
-using namespace std;
 
 struct Film; struct Acteur; // Permet d'utiliser les types alors qu'ils seront défini après.
 
-struct ListeFilms {
+class ListeFilms {
+public:
+	// toutes les fonction liées avec notre classe
+	ListeFilms(int capa, int nElem, Film** elem);
+	void ajouterFilm(Film film);
+	void enleverUnFilm(Film* pointeur_film);
+	Acteur* trouverActeur(string acteur_nom) const;
+	void detruireFilm(Film film);
+	void detruireListeDeFilms();
+	void afficherActeurs(Film film) const;
+	void afficherActeur(const Acteur& acteur) const;
+	void afficherListeFilms() const;
+	void afficherFilmographieActeur(const string& nomActeur) const;
+	Film* operator[](const int& i);
+
+
+private:
+	// les atributs de la classe
 	int capacite, nElements;
-	Film** elements; // Pointeur vers un tableau de Film*, chaque Film* pointant vers un Film.
+	Film** elements;
 };
+
+// le constructeur de notre classe
+ListeFilms::ListeFilms(int capa, int nElem, Film** elem) {
+	capacite = capa;
+	nElements = nElem;
+	elements = elem;
+}
+
+Film* ListeFilms::operator[](const int& i) {
+
+	return (*(elements + i));
+}
 
 class ListeActeurs {
 public : 
@@ -33,7 +61,7 @@ ListeActeurs::ListeActeurs(int capacite, int nElements, std::unique_ptr<std::uni
 	this->elements = move(elements);
 }
 
-class Film
+ class Film
 {
 public :
 	Film();
