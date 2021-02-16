@@ -33,7 +33,7 @@ ListeActeurs::ListeActeurs(int capacite, int nElements, std::unique_ptr<std::uni
 	this->elements = move(elements);
 }
 
- class Film
+class Film
 {
 public :
 	Film();
@@ -64,7 +64,7 @@ ostream& operator<<(ostream& os, const Film& film)
 	return os;
 }
 
-struct Acteur
+class Acteur
 {
 public :
 	Acteur();
