@@ -6,6 +6,7 @@
 
 struct Film; struct Acteur; // Permet d'utiliser les types alors qu'ils seront défini après.
 
+
 class ListeFilms {
 public:
 	// toutes les fonction liées avec notre classe
@@ -40,12 +41,11 @@ Film* ListeFilms::operator[](const int& i) {
 	return (*(elements + i));
 }
 
+
 class ListeActeurs {
 public : 
 	ListeActeurs();
-	ListeActeurs(int capacite, int nElements, std::unique_ptr<std::shared_ptr<Acteur>[]> elements);
-	void setElements(Acteur** s) {elements = s;}
-        Acteur** getElements(){return elements;}
+	ListeActeurs(int capacite, int nElements, std::unique_ptr<std::shared_ptr<Acteur>[]> element);
 	
 private:
 	int capacite, nElements;
@@ -58,13 +58,14 @@ ListeActeurs::ListeActeurs() {
 	this->elements = nullptr;
 }
 
-ListeActeurs::ListeActeurs(int capacite, int nElements, std::unique_ptr<std::unique_ptr<Acteur>[]>elements) {
+ListeActeurs::ListeActeurs(int capacite, int nElements, std::unique_ptr<std::shared_ptr<Acteur>[]>element) {
 	this->capacite = capacite;
 	this->nElements = nElements;
-	this->elements = move(elements);
+	this->elements = move(element);
 }
 
- class Film
+
+class Film
 {
 public :
 	Film();
@@ -99,6 +100,7 @@ ostream& operator<<(ostream& os, const Film& film)
 	return os;
 }
 
+
 class Acteur
 {
 public :
@@ -115,7 +117,7 @@ private :
 Acteur::Acteur() {
 	this->nom = "";
 	this->anneeNaissance = 0;
-	this->sexe = "";
+	this->sexe = *"M";
 	this->joueDans = ListeFilms ListeFilms(1, 0, nullptr)
 }
 
