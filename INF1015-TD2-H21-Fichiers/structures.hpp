@@ -73,8 +73,8 @@ public :
 	friend ostream& operator<<(ostream& os, const Film& film);
 	void setTitre(string s) {titre = s;}
         string getTitre() {return titre;}
-        void setActeurs(ListeActeurs s) {acteurs = s;}
-        ListeActeurs getActeurs() {return acteurs;}
+        void setActeurs(ListeActeurs s) {acteurs = move(s);}
+        ListeActeurs getActeurs() {return move(acteurs);}
 
 private :
 	std::string titre, realisateur; // Titre et nom du réalisateur (on suppose qu'il n'y a qu'un réalisateur).
@@ -85,13 +85,14 @@ private :
 Film::Film() {
  this->titre = "";
  this->realisateur = "";
- this->acteurs = ListeActeurs ListeActeurs;
+ ListeActeurs listeActeurs;
+ this->acteurs = move(listeActeurs);
  }
 
 Film::Film(string titre, string realisateur, ListeActeurs acteurs) {
 this->titre = titre;
 this->realisateur = realisateur;
-this->acteurs = acteurs;
+this->acteurs = move(acteurs);
 }
 
 ostream& operator<<(ostream& os, const Film& film)
