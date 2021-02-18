@@ -23,7 +23,7 @@ public:
 	void afficherListeFilms() const;
 	void afficherFilmographieActeur(const string& nomActeur) const;
 	Film* operator[](const int& i);
-
+	bool trouver(Film f, const function<bool(Film)>& critere);
 
 private:
 	// les atributs de la classe
@@ -47,6 +47,10 @@ ListeFilms::ListeFilms(int capa, int nElem, Film** elem) {
 Film* ListeFilms::operator[](const int& i) {
 
 	return (*(elements + i));
+}
+
+bool ListeFilms::trouver(Film f, const function<bool(Film)>& critere) {
+      return critere(f);
 }
 
 
