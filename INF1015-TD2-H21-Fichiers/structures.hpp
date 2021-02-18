@@ -24,7 +24,9 @@ public:
 	void afficherFilmographieActeur(const string& nomActeur) const;
 	Film* operator[](const int& i);
 	bool trouver(Film f, const function<bool(Film)>& critere);
-
+	int getNElements() {return nElements;}
+        Film** getElements() {return elements;}
+	
 private:
 	// les atributs de la classe
 	int capacite, nElements;
