@@ -51,10 +51,6 @@ Film* ListeFilms::operator[](const int& i) {
 	return (*(elements + i));
 }
 
-bool ListeFilms::trouver(Film f, const function<bool(Film)>& critere) {
-      return critere(f);
-}
-
 
 class ListeActeurs {
 public : 
