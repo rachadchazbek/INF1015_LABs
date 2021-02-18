@@ -53,6 +53,7 @@ class ListeActeurs {
 public : 
 	ListeActeurs();
 	ListeActeurs(int capacite, int nElements, std::unique_ptr<std::shared_ptr<Acteur>[]> element);
+        std::unique_ptr<std::shared_ptr<Acteur>[]> getElements() {return move(elements);}
 	
 private:
 	int capacite, nElements;
