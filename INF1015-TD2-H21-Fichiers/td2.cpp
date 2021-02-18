@@ -10,6 +10,7 @@
 #include "verification_allocation.hpp" // Nos fonctions pour le rapport de fuites de mémoire.
 
 #include <iostream>
+#include <memory>
 #include <fstream>
 #include <string>
 #include <limits>
@@ -281,7 +282,7 @@ int main()
 	
 	// CHAP 7 - 8
     
-        Film skylien = *(listeFilms[0]);
+        /*Film skylien = *(listeFilms[0]);
 	skylien.setTitre("Skylien");
 
 	*(skylien.getActeurs().getElements()) = *((*(listeFilms[1])).getActeurs().getElements()); 
@@ -290,7 +291,7 @@ int main()
 	
 	for (int i = 0; i < 2; ++i){
 	cout << "Nom du Film : " << (*(listeFilms[i])).getTitre() << ", premier acteur du Film :  " << (*(*((*(listeFilms[i])).getActeurs().getElements()))).getNom() << " ";
-	}
+	}*/
 	
 	// Détruit et enlève le premier film de la liste (Alien).
 	detruireFilm(listeFilms.enSpan()[0]);
