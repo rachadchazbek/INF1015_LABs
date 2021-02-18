@@ -1,6 +1,7 @@
 #pragma once
 // Structures mémoires pour une collection de films.
-
+using namespace std;
+#include <iostream>
 #include <string>
 #include <memory>
 
