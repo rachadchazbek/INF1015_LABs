@@ -253,6 +253,18 @@ int main()
 
 	ListeFilms listeFilms = creerListe("films.bin");
 	
+	// CHAP 10 
+	
+	Film func(ListeFilms listeFilms) {
+            for (int i = 0; i < listeFilms.getNElements() ;++i) {
+                bool position = listeFilms.trouver(*(*(listeFilms.getElements() + i)), [](auto v) { if (v.recette == 995) {return 1;} else {return 0;};});
+    
+            if (position) {return (*(*(listeFilms.getElements() + i))); break;}
+            }
+        }
+	
+	cout << func(listeFilms);
+	
 	cout << ligneDeSeparation << "Le premier film de la liste est:" << endl;
 	// Le premier film de la liste.  Devrait être Alien.
 	afficherFilm(*listeFilms.enSpan()[0]);
