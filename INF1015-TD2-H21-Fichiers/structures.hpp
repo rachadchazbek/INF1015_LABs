@@ -10,6 +10,7 @@ struct Film; struct Acteur; // Permet d'utiliser les types alors qu'ils seront d
 class ListeFilms {
 public:
 	// toutes les fonction liées avec notre classe
+	ListeFilms();
 	ListeFilms(int capa, int nElem, Film** elem);
 	void ajouterFilm(Film film);
 	void enleverUnFilm(Film* pointeur_film);
@@ -29,11 +30,17 @@ private:
 	Film** elements;
 };
 
+ListeFilms::ListeFilms() {
+    this->capacite = 1;
+    this->nElements = 0;
+    this->elements = nullptr;
+}
+
 // le constructeur de notre classe
 ListeFilms::ListeFilms(int capa, int nElem, Film** elem) {
-	capacite = capa;
-	nElements = nElem;
-	elements = elem;
+	this->capacite = capa;
+	this->nElements = nElem;
+	this->elements = elem;
 }
 
 Film* ListeFilms::operator[](const int& i) {
@@ -102,8 +109,7 @@ ostream& operator<<(ostream& os, const Film& film)
 }
 
 
-class Acteur
-{
+class Acteur {
 public :
 	Acteur();
 	Acteur(string nom, int anneeNaissance, char sexe, ListeFilms joueDans);
@@ -119,7 +125,8 @@ Acteur::Acteur() {
 	this->nom = "";
 	this->anneeNaissance = 0;
 	this->sexe = *"M";
-	this->joueDans = ListeFilms ListeFilms(1, 0, nullptr)
+	ListeFilms ListeFilms;
+	this->joueDans = ListeFilms;
 }
 
 Acteur::Acteur(string nom, int anneeNaissance, char sexe, ListeFilms joueDans) {
@@ -128,3 +135,4 @@ Acteur::Acteur(string nom, int anneeNaissance, char sexe, ListeFilms joueDans) {
 	this->sexe = sexe;
 	this->joueDans = joueDans;
 }
+
