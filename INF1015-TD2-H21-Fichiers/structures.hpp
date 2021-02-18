@@ -116,6 +116,10 @@ ostream& operator<<(ostream& os, const Film& film)
 	return os;
 }
 
+bool ListeFilms::trouver(Film f, const function<bool(Film)>& critere) {
+      return critere(move(f));
+}
+
 
 class Acteur {
 public :
