@@ -87,6 +87,7 @@ public :
         string getTitre() {return titre;}
         void setActeurs(ListeActeurs s) {acteurs = move(s);}
         ListeActeurs getActeurs() {return move(acteurs);}
+        Film(const Film &obj);
 
 private :
 	std::string titre, realisateur; // Titre et nom du réalisateur (on suppose qu'il n'y a qu'un réalisateur).
@@ -115,6 +116,14 @@ ostream& operator<<(ostream& os, const Film& film)
 
 bool ListeFilms::trouver(Film f, const function<bool(Film)>& critere) {
       return critere(move(f));
+}
+
+Film::Film(const Film &obj) {
+   cout << "Appel du copy constructor";
+   this->titre = obj.titre;
+   this->realisateur = obj.realisateur;
+   this->anneeSortie = obj.anneeSortie;
+   this->recette = obj.recette;
 }
 
 
