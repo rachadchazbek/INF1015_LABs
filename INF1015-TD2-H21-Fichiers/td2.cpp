@@ -283,13 +283,9 @@ int main()
 	// CHAP 7 - 8
     
         Film skylien = *(listeFilms[0]);
-
        (skylien.getActeurs().getElements())[0] = ((((listeFilms[1])->getActeurs()).getElements()))[0]; 
-
        (((skylien.getActeurs().getElements())))[0]->setNom("Daniel Wroughton Craig");
-
         cout << "Nom du Film : " << ((listeFilms[0]))->getTitre() << ", premier acteur du Film :  " << (((((listeFilms[0])->getActeurs()).getElements()))[0])->getNom() << " ";
-
         cout << "Nom du Film : " << ((listeFilms[1]))->getTitre() << ", premier acteur du Film :  " << (((((listeFilms[1])->getActeurs()).getElements()))[0])->getNom();
 
 	
