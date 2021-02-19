@@ -282,16 +282,16 @@ int main()
 	
 	// CHAP 7 - 8
     
-        /*Film skylien = *(listeFilms[0]);
-	skylien.setTitre("Skylien");
+        Film skylien = *(listeFilms[0]);
 
-	*(skylien.getActeurs().getElements()) = *((*(listeFilms[1])).getActeurs().getElements()); 
-	
-	(*(*(skylien.getActeurs().getElements()))).setNom("Daniel Wroughton Craig");
-	
-	for (int i = 0; i < 2; ++i){
-	cout << "Nom du Film : " << (*(listeFilms[i])).getTitre() << ", premier acteur du Film :  " << (*(*((*(listeFilms[i])).getActeurs().getElements()))).getNom() << " ";
-	}*/
+       (skylien.getActeurs().getElements())[0] = ((((listeFilms[1])->getActeurs()).getElements()))[0]; 
+
+       (((skylien.getActeurs().getElements())))[0]->setNom("Daniel Wroughton Craig");
+
+        cout << "Nom du Film : " << ((listeFilms[0]))->getTitre() << ", premier acteur du Film :  " << (((((listeFilms[0])->getActeurs()).getElements()))[0])->getNom() << " ";
+
+        cout << "Nom du Film : " << ((listeFilms[1]))->getTitre() << ", premier acteur du Film :  " << (((((listeFilms[1])->getActeurs()).getElements()))[0])->getNom();
+
 	
 	// Détruit et enlève le premier film de la liste (Alien).
 	detruireFilm(listeFilms.enSpan()[0]);
