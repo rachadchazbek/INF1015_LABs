@@ -25,7 +25,7 @@ public:
 	void afficherFilmographieActeur(const string& nomActeur) const;
 	Film* operator[](const int& i);
 	bool trouver(Film f, const function<bool(Film)>& critere);
-	int getNElements() {return nElements;}
+	const int& getNElements() {return nElements;}
         Film** getElements() {return elements;}
 	
 private:
@@ -132,7 +132,7 @@ public :
 	Acteur();
 	Acteur(string nom, int anneeNaissance, char sexe, ListeFilms joueDans);
 	void setNom(string s) {nom = s;}
-        string getNom() {return nom;}
+        const string& getNom() {return nom;}
 
 private :
 	std::string nom; int anneeNaissance; char sexe;
