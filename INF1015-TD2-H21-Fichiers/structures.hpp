@@ -4,6 +4,7 @@ using namespace std;
 #include <iostream>
 #include <string>
 #include <memory>
+#include <functional>
 
 struct Film; struct Acteur; // Permet d'utiliser les types alors qu'ils seront défini après.
 
