@@ -398,16 +398,16 @@ int main()
 	// copier le pointeur du premier acteur de listeFilms vers le premier acteur de la liste de skylien.
 	
         ListeActeurs act;
-        act = skylien.getActeurs();
+        act = skylien.getActeurs();       // pointeur vers la liste d'Acteurs du film Skylien.
 	
         ListeActeurs acte;
-        acte = ((listeFilms[1])->getActeurs());
+        acte = ((listeFilms[1])->getActeurs());     // pointeur vers la liste d'Acteurs du film listeFilms[1].
 	
         std::unique_ptr<std::shared_ptr<Acteur>[]> ele;
-        ele = (act.getElements());
+        ele = (act.getElements());                        // pointeur vers une liste de pointeurs de Films de la ListeActeurs du film skylien.
 	
         std::unique_ptr<std::shared_ptr<Acteur>[]> elem;
-        elem = ((acte).getElements());
+        elem = ((acte).getElements());                     // pointeur vers une liste de pointeurs de Films de la ListeActeurs du film listeFilms[1].
  
         (ele)[0] = (elem)[0]; 
 	// modifier le nom du premier acteur chez skylien, ce qui va aussi le  modifier celui de listeFilms[1], vu que on a copié le pointeur.
