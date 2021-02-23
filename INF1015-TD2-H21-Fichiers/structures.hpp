@@ -74,6 +74,7 @@ public :
         void setActeurs(ListeActeurs s) {acteurs = move(s);} //setter de acteurs
         ListeActeurs getActeurs() {return move(acteurs);} // getter de acteurs
         Film(const Film &obj); // copy-constructor
+	int getRecette() {return recette;} // getter de la recette
 
 private :
 	std::string titre, realisateur; // Titre et nom du réalisateur (on suppose qu'il n'y a qu'un réalisateur).
