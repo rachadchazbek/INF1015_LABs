@@ -51,7 +51,8 @@ string lireString(istream& fichier)
 
 #pragma endregion//}
 
-// Fonctions pour ajouter un Film à une ListeFilms.
+
+// Méthodes de la classe ListeFilms.
 //[
 void ListeFilms::changeDimension(int nouvelleCapacite)
 {
@@ -111,6 +112,112 @@ Acteur* ListeFilms::trouverActeur(const string& nomActeur) const
 	return nullptr;
 }
 //]
+
+//[
+// constructeur par défaut de notre classe ListeFilms
+ListeFilms::ListeFilms() 
+{
+    this->capacite = 1;    
+    this->nElements = 0;
+    this->elements = nullptr;
+}
+//]
+
+//[
+// le constructeur de notre classe ListeFilms
+ListeFilms::ListeFilms(int capa, int nElem, Film** elem) 
+{
+	this->capacite = capa;
+	this->nElements = nElem;
+	this->elements = elem;
+}
+//]
+
+//[
+// surcharge d'opérateur pour []
+Film* ListeFilms::operator[](const int& i)
+{
+	return (*(elements + i));   // cet opérateur nous retourne un pointeur de Film de tel sorte que on peut écrire : Film nomFilm = *listeFilms[i] 
+                                    // pour la section Chapitres 7 – 8 du TD3
+}
+//]
+
+//[
+//  chercher un film en lui passant une lambda pour indiquer le critère
+bool ListeFilms::trouver(Film f, const function<bool(Film)>& critere)
+{
+      return critere(move(f));
+}
+//]
+
+
+// Méthodes de la classe Film 
+//[
+// constructeur par défaut de notre classe
+Film::Film()
+{
+ this->titre = "";
+ this->realisateur = "";
+ ListeActeurs listeActeurs;
+ this->acteurs = move(listeActeurs);
+ }
+//]
+
+//[
+// constructeur de notre classe
+Film::Film(string titre, string realisateur, ListeActeurs acteurs) 
+{
+this->titre = titre;
+this->realisateur = realisateur;
+this->acteurs = move(acteurs);
+}
+//]
+
+//[
+// surcharge d'opérateur de cout
+ostream& operator<<(ostream& os, const Film& film)
+{
+	os << film.titre << " ";
+	return os;                  // l'opérateur "cout <<" nous retourne le titre du Film en question, pour la section Chapitre 7 : du TD3
+}
+//]
+
+//[
+// copy-constructor de notre classe
+Film::Film(const Film &obj) 
+{
+   this->titre = obj.titre;
+   this->realisateur = obj.realisateur;
+   this->anneeSortie = obj.anneeSortie;
+   this->recette = obj.recette;
+}
+//]
+
+
+// Méthodes de la classe Acteurs
+//[
+// constructeur par défaut de notre classe Acteurs
+Acteur::Acteur()
+{
+	this->nom = "";
+	this->anneeNaissance = 0;
+	this->sexe = *"M";
+	ListeFilms ListeFilms;
+	this->joueDans = ListeFilms;
+}
+//]
+
+//[
+// constructeur de notre classe Acteurs
+Acteur::Acteur(string nom, int anneeNaissance, char sexe, ListeFilms joueDans)
+{
+	this->nom = nom;
+	this->anneeNaissance = anneeNaissance;
+	this->sexe = sexe;
+	this->joueDans = joueDans;
+}
+//]
+
 
 // Les fonctions pour lire le fichier et créer/allouer une ListeFilms.
 
@@ -255,7 +362,7 @@ int main()
 	ListeFilms listeFilms = creerListe("films.bin");
 	
 	// CHAP 10 
-	
+	// si recette = 995 milions de dollars, return bool : 1.
 	Film func(ListeFilms listeFilms) {
             for (int i = 0; i < listeFilms.getNElements() ;++i) {
                 bool position = listeFilms.trouver(*(*(listeFilms.getElements() + i)), [](auto v) { if (v.recette == 995) {return 1;} else {return 0;};});
@@ -263,7 +370,7 @@ int main()
             if (position) {return (*(*(listeFilms.getElements() + i))); break;}
             }
         }
-	
+	// return film si recette = 995, sachant que l'opérateur "cout <<" est surchargé pour la classe Film pour affiché le titre du film.
 	cout << func(listeFilms);
 	
 	cout << ligneDeSeparation << "Le premier film de la liste est:" << endl;
@@ -281,10 +388,13 @@ int main()
 	afficherFilmographieActeur(listeFilms, "Benedict Cumberbatch");
 	
 	// CHAP 7 - 8
-    
+        // copier le listeFilms[0] dans skylien, avec un copy-constructor + surcharge d'opérateur de [].
         Film skylien = *(listeFilms[0]);
+	// copier le pointeur du premier acteur de listeFilms vers le premier acteur de la liste de skylien.
        (skylien.getActeurs().getElements())[0] = ((((listeFilms[1])->getActeurs()).getElements()))[0]; 
+	// modifier le nom du premier acteur chez skylien, ce qui va aussi le  modifier celui de listeFilms[1], vu que on a copié le pointeur.
        (((skylien.getActeurs().getElements())))[0]->setNom("Daniel Wroughton Craig");
+	// pour chacun des films : skylien et listeFilms[1], afficher titre et afficher nom du premier acteur.
         cout << "Nom du Film : " << ((listeFilms[0]))->getTitre() << ", premier acteur du Film :  " << (((((listeFilms[0])->getActeurs()).getElements()))[0])->getNom() << " ";
         cout << "Nom du Film : " << ((listeFilms[1]))->getTitre() << ", premier acteur du Film :  " << (((((listeFilms[1])->getActeurs()).getElements()))[0])->getNom();
 
