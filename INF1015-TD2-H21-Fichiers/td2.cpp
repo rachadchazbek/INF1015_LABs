@@ -349,6 +349,17 @@ void afficherFilmographieActeur(const ListeFilms& listeFilms, const string& nomA
 		afficherListeFilms(acteur->joueDans);
 }
 
+// CHAP 10 // retourne 1 si le critère est vrai sur le film que on passe en paramètre.
+// si recette = 995 milions de dollars, return bool : 1.
+Film func(ListeFilms listeFilms) {                          // on passe tout les films de listeFilms dans notre méthode "trouver".
+            for (int i = 0; i < listeFilms.getNElements() ;++i) {
+                bool position = listeFilms.trouver(*(*(listeFilms.getElements() + i)), [](auto v) { if (v.getRecette() == 995) {return 1;} else {return 0;};});
+    
+            if (position) {return (*(*(listeFilms.getElements() + i))); break;}
+            }
+            return (*(*(listeFilms.getElements())));
+        }
+
 int main()
 {
 	#ifdef VERIFICATION_ALLOCATION_INCLUS
@@ -360,16 +371,7 @@ int main()
 
 	ListeFilms listeFilms = creerListe("films.bin");
 	
-	// CHAP 10 // retourne 1 si le critère est vrai sur le film que on passe en paramètre.
-	// si recette = 995 milions de dollars, return bool : 1.
-	Film func(ListeFilms listeFilms) {                          // on passe tout les films de listeFilms dans notre méthode "trouver".
-            for (int i = 0; i < listeFilms.getNElements() ;++i) {
-                bool position = listeFilms.trouver(*(*(listeFilms.getElements() + i)), [](auto v) { if (v.recette == 995) {return 1;} else {return 0;};});
-    
-            if (position) {return (*(*(listeFilms.getElements() + i))); break;}
-            }
-        }
-	
+	// Chapitre 10 
 	// return film si recette = 995, sachant que l'opérateur "cout <<" est surchargé pour la classe Film pour affiché le titre du film.
 	cout << func(listeFilms);
 	
@@ -383,35 +385,56 @@ int main()
 		cout << *((listeFilms.getElements())[i]) << " ";
 	}
 
-	listeFilms.trouverActeur("Benedict Cumberbatch")->anneeNaissance = 1976;
+	listeFilms.trouverActeur("Benedict Cumberbatch")->anneeNaissance = 1976; //
 
-	cout << ligneDeSeparation << "Liste des films où Benedict Cumberbatch joue sont:" << endl;
+	cout << ligneDeSeparation << "Liste des films où Benedict Cumberbatch joue sont:" << endl; // 
 	// Affiche la liste des films où Benedict Cumberbatch joue.  Il devrait y avoir Le Hobbit et Le jeu de l'imitation.
 	afficherFilmographieActeur(listeFilms, "Benedict Cumberbatch");
 	
 	// CHAP 7 - 8
-        // copier le listeFilms[0] dans skylien, avec un copy-constructor + surcharge d'opérateur de [].
+	//[
+        ListeFilms listeFilms;
         Film skylien = *(listeFilms[0]);
 	// copier le pointeur du premier acteur de listeFilms vers le premier acteur de la liste de skylien.
-       (skylien.getActeurs().getElements())[0] = ((((listeFilms[1])->getActeurs()).getElements()))[0]; 
-	// modifier le nom du premier acteur chez skylien, ce qui va aussi le  modifier celui de listeFilms[1], vu que on a copié le pointeur.
-       (((skylien.getActeurs().getElements())))[0]->setNom("Daniel Wroughton Craig");
-	// pour chacun des films : skylien et listeFilms[1], afficher titre et afficher nom du premier acteur.
-        cout << "Nom du Film : " << ((listeFilms[0]))->getTitre() << ", premier acteur du Film :  " << (((((listeFilms[0])->getActeurs()).getElements()))[0])->getNom() << " ";
-        cout << "Nom du Film : " << ((listeFilms[1]))->getTitre() << ", premier acteur du Film :  " << (((((listeFilms[1])->getActeurs()).getElements()))[0])->getNom();
-
 	
-	// Détruit et enlève le premier film de la liste (Alien).
-	detruireFilm(listeFilms.enSpan()[0]);
+        ListeActeurs act;
+        act = skylien.getActeurs();
+	
+        ListeActeurs acte;
+        acte = ((listeFilms[1])->getActeurs());
+	
+        std::unique_ptr<std::shared_ptr<Acteur>[]> ele;
+        ele = (act.getElements());
+	
+        std::unique_ptr<std::shared_ptr<Acteur>[]> elem;
+        elem = ((acte).getElements());
+ 
+        (ele)[0] = (elem)[0]; 
+	// modifier le nom du premier acteur chez skylien, ce qui va aussi le  modifier celui de listeFilms[1], vu que on a copié le pointeur.
+        (ele)[0]->setNom("Daniel Wroughton Craig");
+	// pour chacun des films : skylien et listeFilms[1], afficher titre et afficher nom du premier acteur.
+        cout << "Nom du Film : " << ((listeFilms[0]))->getTitre() << ", premier acteur du Film :  " << ((ele)[0])->getNom() << " ";
+        cout << "Nom du Film : " << ((listeFilms[1]))->getTitre() << ", premier acteur du Film :  " << ((elem)[0])->getNom();
+        
+        act.setElements(move(ele));
+        skylien.setActeurs(move(act));
+        acte.setElements(move(elem));
+        listeFilms[1]->setActeurs(move(acte));
+        //]
+	
+	// Détruit et enlève le premier film de la liste (Alien). //
+	detruireFilm(listeFilms.enSpan()[0]); 
 	listeFilms.enleverFilm(listeFilms.enSpan()[0]);
 
 	cout << ligneDeSeparation << "Les films sont maintenant:" << endl;
-	afficherListeFilms(listeFilms);
+	for (int i = 0; i < listeFilms.getNElements(); ++i) {
+		cout << *((listeFilms.getElements())[i]) << " ";
+	}
 
-	// Pour une couverture avec 0% de lignes non exécutées:
+	// Pour une couverture avec 0% de lignes non exécutées: //
 	listeFilms.enleverFilm(nullptr); // Enlever un film qui n'est pas dans la liste (clairement que nullptr n'y est pas).
 	afficherFilmographieActeur(listeFilms, "N'existe pas"); // Afficher les films d'un acteur qui n'existe pas.
 
-	// Détruire tout avant de terminer le programme.
+	// Détruire tout avant de terminer le programme. //
 	listeFilms.detruire(true);
 }
