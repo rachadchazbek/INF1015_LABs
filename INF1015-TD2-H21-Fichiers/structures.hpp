@@ -5,6 +5,8 @@ using namespace std;
 #include <string>
 #include <memory>
 #include <functional>
+#include "gsl/span"
+using namespace gsl;
 
 struct Film; struct Acteur; // Permet d'utiliser les types alors qu'ils seront défini après.
 
@@ -13,21 +15,18 @@ struct Film; struct Acteur; // Permet d'utiliser les types alors qu'ils seront d
 class ListeFilms {
 public:
 	// toutes les fonction liées avec notre classe
-	ListeFilms();
-	ListeFilms(int capa, int nElem, Film** elem);
-	void ajouterFilm(Film film);
-	void enleverUnFilm(Film* pointeur_film);
-	Acteur* trouverActeur(string acteur_nom) const;
-	void detruireFilm(Film film);
-	void detruireListeDeFilms();
-	void afficherActeurs(Film film) const;
-	void afficherActeur(const Acteur& acteur) const;
-	void afficherListeFilms() const;
-	void afficherFilmographieActeur(const string& nomActeur) const;
-	Film* operator[](const int& i);
-	bool trouver(Film f, const function<bool(Film)>& critere);
-	const int& getNElements() {return nElements;}
-        Film** getElements() {return elements;}
+	ListeFilms(); // constructeur par défaut de notre classe
+	ListeFilms(int capa, int nElem, Film** elem); // le constructeur de notre classe
+	void changeDimension(int nouvelleCapacite);
+	void ajouterFilm(Film* film);
+	span<Film*> enSpan() const;
+	void enleverFilm(const Film* film);
+	Acteur* trouverActeur(const string& nomActeur) const;
+	void detruire(bool possedeLesFilms);
+	Film* operator[](const int& i); // surcharge d'opérateur pour []
+	bool trouver(Film f, const function<bool(Film)>& critere );
+	const int& getNElements() {return nElements;} // getter de nElements
+        Film** getElements() {return elements;} // getter de elements
 	
 private:
 	// les atributs de la classe
@@ -35,33 +34,13 @@ private:
 	Film** elements;
 };
 
-// constructeur par défaut de notre classe
-ListeFilms::ListeFilms() {
-    this->capacite = 1;    
-    this->nElements = 0;
-    this->elements = nullptr;
-}
-
-// le constructeur de notre classe
-ListeFilms::ListeFilms(int capa, int nElem, Film** elem) {
-	this->capacite = capa;
-	this->nElements = nElem;
-	this->elements = elem;
-}
-
-// surcharge d'opérateur pour []
-Film* ListeFilms::operator[](const int& i) {
-	return (*(elements + i));   // cet opérateur nous retourne un pointeur de Film de tel sorte que on peut écrire : Film nomFilm = *listeFilms[i] 
-                                    // pour la section Chapitres 7 – 8 du TD3
-}
-
 
 // classe ListeActeurs
 class ListeActeurs {
 public : 
 	ListeActeurs();
 	ListeActeurs(int capacite, int nElements, std::unique_ptr<std::shared_ptr<Acteur>[]> element);
-        std::unique_ptr<std::shared_ptr<Acteur>[]> getElements() {return move(elements);}
+        std::unique_ptr<std::shared_ptr<Acteur>[]> getElements() {return move(elements);} // getter de elements
 	
 private:
 	int capacite, nElements;
@@ -87,14 +66,14 @@ ListeActeurs::ListeActeurs(int capacite, int nElements, std::unique_ptr<std::sha
 class Film
 {
 public :
-	Film();
-	Film(string titre, string realisateur, ListeActeurs acteurs);
-	friend ostream& operator<<(ostream& os, const Film& film);
-	void setTitre(string s) {titre = s;}
-        string getTitre() {return titre;}
-        void setActeurs(ListeActeurs s) {acteurs = move(s);}
-        ListeActeurs getActeurs() {return move(acteurs);}
-        Film(const Film &obj);
+	Film(); // constructeur par défaut de notre classe
+	Film(string titre, string realisateur, ListeActeurs acteurs); // constructeur de notre classe
+	friend ostream& operator<<(ostream& os, const Film& film); // surcharge d'opérateur de cout
+	void setTitre(string s) {titre = s;} // setter de titre
+        string getTitre() {return titre;} // getter de titre
+        void setActeurs(ListeActeurs s) {acteurs = move(s);} //setter de acteurs
+        ListeActeurs getActeurs() {return move(acteurs);} // getter de acteurs
+        Film(const Film &obj); // copy-constructor
 
 private :
 	std::string titre, realisateur; // Titre et nom du réalisateur (on suppose qu'il n'y a qu'un réalisateur).
@@ -102,47 +81,12 @@ private :
 	ListeActeurs acteurs;
 };
 
-// constructeur par défaut de notre classe
-Film::Film() {
- this->titre = "";
- this->realisateur = "";
- ListeActeurs listeActeurs;
- this->acteurs = move(listeActeurs);
- }
-
-// constructeur de notre classe
-Film::Film(string titre, string realisateur, ListeActeurs acteurs) {
-this->titre = titre;
-this->realisateur = realisateur;
-this->acteurs = move(acteurs);
-}
-
-// surcharge d'opérateur de cout
-ostream& operator<<(ostream& os, const Film& film)
-{
-	os << film.titre << " ";
-	return os;                  // l'opérateur "cout <<" nous retourne le titre du Film en question, pour la section Chapitre 7 : du TD3
-}
-
-//  chercher un film en lui passant une lambda pour indiquer le critère
-bool ListeFilms::trouver(Film f, const function<bool(Film)>& critere) {
-      return critere(move(f));
-}
-
-// copy-constructor de notre classe
-Film::Film(const Film &obj) {
-   cout << "Appel du copy constructor";
-   this->titre = obj.titre;
-   this->realisateur = obj.realisateur;
-   this->anneeSortie = obj.anneeSortie;
-   this->recette = obj.recette;
-}
 
 // classe Acteur
 class Acteur {
 public :
-	Acteur();
-	Acteur(string nom, int anneeNaissance, char sexe, ListeFilms joueDans);
+	Acteur(); // constructeur par défaut de notre classe 
+	Acteur(string nom, int anneeNaissance, char sexe, ListeFilms joueDans); // constructeur de notre classe
 	void setNom(string s) {nom = s;}
         const string& getNom() {return nom;}
 
@@ -150,21 +94,3 @@ private :
 	std::string nom; int anneeNaissance; char sexe;
 	ListeFilms joueDans;
 };
-
-// constructeur par défaut de notre classe 
-Acteur::Acteur() {
-	this->nom = "";
-	this->anneeNaissance = 0;
-	this->sexe = *"M";
-	ListeFilms ListeFilms;
-	this->joueDans = ListeFilms;
-}
-
-// constructeur de notre classe
-Acteur::Acteur(string nom, int anneeNaissance, char sexe, ListeFilms joueDans) {
-	this->nom = nom;
-	this->anneeNaissance = anneeNaissance;
-	this->sexe = sexe;
-	this->joueDans = joueDans;
-}
-
