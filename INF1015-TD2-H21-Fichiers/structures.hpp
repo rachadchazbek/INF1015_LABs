@@ -41,6 +41,7 @@ public :
 	ListeActeurs();
 	ListeActeurs(int capacite, int nElements, std::unique_ptr<std::shared_ptr<Acteur>[]> element);
         std::unique_ptr<std::shared_ptr<Acteur>[]> getElements() {return move(elements);} // getter de elements
+	void setElements(std::unique_ptr<std::shared_ptr<Acteur>[]> s) {elements = move(s);} // setter de elements
 	
 private:
 	int capacite, nElements;
