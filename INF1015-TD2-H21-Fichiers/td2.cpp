@@ -1,4 +1,3 @@
-// Solutionnaire du TD2 INF1015 hiver 2021
 // Par Francois-R.Boyer@PolyMtl.ca
 
 #pragma region "Includes"//{
