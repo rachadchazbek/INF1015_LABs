@@ -377,19 +377,21 @@ int main()
 	
 	cout << ligneDeSeparation << "Le premier film de la liste est:" << endl;
 	// Le premier film de la liste.  Devrait être Alien.
-	cout << *((listeFilms.getElements())[0]);
+	cout << *(*((listeFilms.getElements())));
 
 	cout << ligneDeSeparation << "Les films sont:" << endl;
 	// Affiche la liste des films.  Il devrait y en avoir 7.
 	for (int i = 0; i < listeFilms.getNElements(); ++i) {
-		cout << *((listeFilms.getElements())[i]) << " ";
+		cout << *(*((listeFilms.getElements()) + i)) << " ";
 	}
 
-	listeFilms.trouverActeur("Benedict Cumberbatch")->anneeNaissance = 1976; //
+	listeFilms.trouverActeur("Benedict Cumberbatch")->anneeNaissance = 1976; // trouver acteur avec le nom "Benedict Cumberbatch".
 
-	cout << ligneDeSeparation << "Liste des films où Benedict Cumberbatch joue sont:" << endl; // 
+	cout << ligneDeSeparation << "Liste des films où Benedict Cumberbatch joue sont:" << endl;  
 	// Affiche la liste des films où Benedict Cumberbatch joue.  Il devrait y avoir Le Hobbit et Le jeu de l'imitation.
-	afficherFilmographieActeur(listeFilms, "Benedict Cumberbatch");
+	for (int i = 0; i < ((listeFilms.trouverActeur("Benedict Cumberbatch"))->getJoueDans()).getNElements(); ++ i) {
+	cout << *(*(((listeFilms.trouverActeur("Benedict Cumberbatch"))->getJoueDans()).getElements() + i));
+	}
 	
 	// CHAP 7 - 8
 	//[
@@ -422,19 +424,34 @@ int main()
         listeFilms[1]->setActeurs(move(acte));
         //]
 	
-	// Détruit et enlève le premier film de la liste (Alien). //
-	detruireFilm(listeFilms.enSpan()[0]); 
-	listeFilms.enleverFilm(listeFilms.enSpan()[0]);
-
+	// Détruit et enlève le premier film de la liste (Alien). 
+	delete listeFilms[0];
+         
+        // afiche la nouvelle liste de films.
 	cout << ligneDeSeparation << "Les films sont maintenant:" << endl;
 	for (int i = 0; i < listeFilms.getNElements(); ++i) {
-		cout << *((listeFilms.getElements())[i]) << " ";
+		cout << *(*((listeFilms.getElements()) + i)) << " ";
 	}
 
-	// Pour une couverture avec 0% de lignes non exécutées: //
+	// Pour une couverture avec 0% de lignes non exécutées: 
 	listeFilms.enleverFilm(nullptr); // Enlever un film qui n'est pas dans la liste (clairement que nullptr n'y est pas).
-	afficherFilmographieActeur(listeFilms, "N'existe pas"); // Afficher les films d'un acteur qui n'existe pas.
+	
+	Acteur* acteur = listeFilms.trouverActeur("N'existe pas");
+	if  (acteur == nullptr) 
+	{
+	          cout << "Aucun acteur de ce nom";
+	} 
+	else 
+	{ 
+		cout << ligneDeSeparation << "Les films sont:";
+	        // Affiche la liste des films. 
+	        for (int i = 0; i < acteur->getJoueDans().getNElements(); ++i) {
+		cout << *(*((acteur->getJoueDans().getElements()) + i)) << " "; 
+		}
+	}
+		
+	//afficherFilmographieActeur(listeFilms, "N'existe pas"); // Afficher les films d'un acteur qui n'existe pas.
 
-	// Détruire tout avant de terminer le programme. //
+	// Détruire tout avant de terminer le programme. 
 	listeFilms.detruire(true);
 }
