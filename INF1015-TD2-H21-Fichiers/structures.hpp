@@ -91,6 +91,7 @@ public :
 	Acteur(string nom, int anneeNaissance, char sexe, ListeFilms joueDans); // constructeur de notre classe
 	void setNom(string s) {nom = s;}
         const string& getNom() {return nom;}
+	ListeFilms getJoueDans() {return joueDans;}
 
 private :
 	std::string nom; int anneeNaissance; char sexe;
