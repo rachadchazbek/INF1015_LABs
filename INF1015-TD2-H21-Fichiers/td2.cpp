@@ -288,7 +288,7 @@ bool joueEncore(const Acteur* acteur)
 void detruireFilm(Film* film)
 {
 	for (Acteur* acteur : spanListeActeurs(film->acteurs)) {
-		acteur->joueDans.enleverFilm(film);
+	        acteur->joueDans.enleverFilm(film);
 		if (!joueEncore(acteur))
 			detruireActeur(acteur);
 	}
@@ -382,20 +382,19 @@ int main()
 	cout << ligneDeSeparation << "Les films sont:" << endl;
 	// Affiche la liste des films.  Il devrait y en avoir 7.
 	for (int i = 0; i < listeFilms.getNElements(); ++i) {
-		cout << *(*((listeFilms.getElements()) + i)) << " ";
+	        cout << *(*((listeFilms.getElements()) + i)) << " ";
 	}
 
-	listeFilms.trouverActeur("Benedict Cumberbatch")->anneeNaissance = 1976; // trouver acteur avec le nom "Benedict Cumberbatch".
+	listeFilms.trouverActeur("Benedict Cumberbatch")->setAnneeNaissance(1976); // trouver acteur avec le nom "Benedict Cumberbatch".
 
 	cout << ligneDeSeparation << "Liste des films où Benedict Cumberbatch joue sont:" << endl;  
 	// Affiche la liste des films où Benedict Cumberbatch joue.  Il devrait y avoir Le Hobbit et Le jeu de l'imitation.
 	for (int i = 0; i < ((listeFilms.trouverActeur("Benedict Cumberbatch"))->getJoueDans()).getNElements(); ++ i) {
-	cout << *(*(((listeFilms.trouverActeur("Benedict Cumberbatch"))->getJoueDans()).getElements() + i));
+	        cout << *(*(((listeFilms.trouverActeur("Benedict Cumberbatch"))->getJoueDans()).getElements() + i));
 	}
 	
 	// CHAP 7 - 8
 	//[
-        ListeFilms listeFilms;
         Film skylien = *(listeFilms[0]);
 	// copier le pointeur du premier acteur de listeFilms vers le premier acteur de la liste de skylien.
 	
@@ -430,7 +429,7 @@ int main()
         // afiche la nouvelle liste de films.
 	cout << ligneDeSeparation << "Les films sont maintenant:" << endl;
 	for (int i = 0; i < listeFilms.getNElements(); ++i) {
-		cout << *(*((listeFilms.getElements()) + i)) << " ";
+	        cout << *(*((listeFilms.getElements()) + i)) << " ";
 	}
 
 	// Pour une couverture avec 0% de lignes non exécutées: 
@@ -439,14 +438,14 @@ int main()
 	Acteur* acteur = listeFilms.trouverActeur("N'existe pas");
 	if  (acteur == nullptr) 
 	{
-	          cout << "Aucun acteur de ce nom";
+	        cout << "Aucun acteur de ce nom";
 	} 
 	else 
 	{ 
 		cout << ligneDeSeparation << "Les films sont:";
 	        // Affiche la liste des films. 
 	        for (int i = 0; i < acteur->getJoueDans().getNElements(); ++i) {
-		cout << *(*((acteur->getJoueDans().getElements()) + i)) << " "; 
+		        cout << *(*((acteur->getJoueDans().getElements()) + i)) << " "; 
 		}
 	}
 		
@@ -454,4 +453,5 @@ int main()
 
 	// Détruire tout avant de terminer le programme. 
 	listeFilms.detruire(true);
+	return 0;
 }
