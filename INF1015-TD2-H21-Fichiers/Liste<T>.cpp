@@ -8,13 +8,13 @@ using namespace std;
 template<typename T>
 class Liste {
 public:
-    Liste()  {//default Constructeur
+    Liste()  { // default Constructeur
         capacity = 100;
         nElements = 0;
         elements = make_unique<std::shared_ptr<T>[]>(capacity);
     }
-    T getElement(int index); // Returns an element. Should access the element with indedx in the shared pointer array 
-    void addElement(T element, int index); //add an element. Should take a shared pointer of the element and add it the array of shared pointer. Should also check for the array capacity. If is full should call doubleCapacity().
+    T getElement(int index); // Returns an element. Should access the element with indedx in the shared pointer array.
+    void addElement(T element, int index); // Add an element. Should take a shared pointer of the element and add it the array of shared pointer. Should also check for the array capacity. If is full should call doubleCapacity().
     void modifyElement(T element, int index);
 
     Liste(const Liste &obj) {
@@ -28,25 +28,25 @@ public:
 
 private:
     int capacity, nElements; 
-    unique_ptr<shared_ptr<T>[]> elements;// Unique pointer to an array of shared pointers. Each shared pointer, points to an Element
-    void doubleCapacity();// should double the array of shared pointers capacity. Should be private.
+    unique_ptr<shared_ptr<T>[]> elements;// Unique pointer to an array of shared pointers. Each shared pointer, points to an Element.
+    void doubleCapacity();// Should double the array of shared pointers capacity. Should be private.
 };
 
 
-template<typename T> 
+template<typename T>  // Getter of elements.
 T Liste<T>::getElement(int index) {
     cout<< *elements[index] <<endl;
     return *elements[index];
 }
 
-template<typename T>
+template<typename T> // Adder of an element in the list elements.
 void Liste<T>::addElement(T element, int index) {
     auto ptr = make_shared<T>(element);
     elements[index] = move(ptr);
     nElements = nElements + 1;
 }
 
-template<typename T>
+template<typename T> // Modifier of an element in the list elements.
 void Liste<T>::modifyElement(T element, int index) {
     *elements[index] = element;
 }
@@ -54,6 +54,7 @@ void Liste<T>::modifyElement(T element, int index) {
 struct Point { double x,y; };
 
 int main() {
+    // Implementation of the class Liste.
     Liste<string> listeTextes;
     listeTextes.addElement("this is string 1", 0);
     listeTextes.addElement("this is string 2", 1);
