@@ -89,9 +89,10 @@ class Acteur {
 public :
 	Acteur(); // constructeur par défaut de notre classe 
 	Acteur(string nom, int anneeNaissance, char sexe, ListeFilms joueDans); // constructeur de notre classe
-	void setNom(string s) {nom = s;}
-        const string& getNom() {return nom;}
-	ListeFilms getJoueDans() {return joueDans;}
+	void setNom(string s) {nom = s;} // setter de nom
+        const string& getNom() {return nom;} // getter de nom
+	ListeFilms getJoueDans() {return joueDans;} // getter de joueDans
+	void setAnneeNaissance(int s) {anneeNaissance = s;} // setter de anneeNaissance
 
 private :
 	std::string nom; int anneeNaissance; char sexe;
