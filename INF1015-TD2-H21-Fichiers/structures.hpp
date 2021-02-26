@@ -126,6 +126,9 @@ public :
         ListeActeurs getActeurs() {return move(acteurs);} // getter de acteurs
         Film(const Film &obj); // copy-constructor
 	int getRecette() const {return recette;} // getter de la recette
+	void setRealisateur(string s) {realisateur = s;} // setter realisateur
+	void setAnneeSortie(int s) {anneeSortie = s;} // setter anneeSortie
+	void setRecette(int s) {recette = s;} // setter recette
 
 private :
 	std::string titre, realisateur; // Titre et nom du réalisateur (on suppose qu'il n'y a qu'un réalisateur).
@@ -143,6 +146,7 @@ public :
         string getNom() const {return nom;} // getter de nom
 	ListeFilms getJoueDans() const {return joueDans;} // getter de joueDans
 	void setAnneeNaissance(int s) {anneeNaissance = s;} // setter de anneeNaissance
+	void setSexe(char s) {sexe = s;} // setter de sexe
 
 private :
 	std::string nom; int anneeNaissance; char sexe;
