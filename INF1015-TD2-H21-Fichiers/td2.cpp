@@ -103,9 +103,12 @@ span<Acteur*> spanListeActeurs(const ListeActeurs& liste) { return span(liste.el
 Acteur* ListeFilms::trouverActeur(const string& nomActeur) const
 {
 	for (const Film* film : enSpan()) {
-		for (Acteur* acteur : spanListeActeurs(film->acteurs)) {
-			if (acteur->nom == nomActeur)
+	    Liste Acteurs acts = film->getActeurs();
+		for (Acteur* acteur : spanListeActeurs(acts)) {
+			if (acteur->getNom() == nomActeur)
+			    film->setActeurs(move(acts));
 				return acteur;
+		    film->setActeurs(move(acts));
 		}
 	}
 	return nullptr;
@@ -222,36 +225,36 @@ Acteur::Acteur(string nom, int anneeNaissance, char sexe, ListeFilms joueDans)
 
 Acteur* lireActeur(istream& fichier, ListeFilms& listeFilms)
 {
-	Acteur acteur = {};
-	acteur.nom            = lireString(fichier);
-	acteur.anneeNaissance = lireUint16 (fichier);
-	acteur.sexe           = lireUint8  (fichier);
+	Acteur acteur;
+	acteur.setNom(lireString(fichier));
+	acteur.setAnneeNaissance(lireUint16 (fichier));
+	acteur.setSexe(lireUint8  (fichier));
 
-	Acteur* acteurExistant = listeFilms.trouverActeur(acteur.nom);
+	Acteur* acteurExistant = listeFilms.trouverActeur(acteur.getNom());
 	if (acteurExistant != nullptr)
 		return acteurExistant;
 	else {
-		cout << "Création Acteur " << acteur.nom << endl;
+		cout << "Création Acteur " << acteur.getNom() << endl;
 		return new Acteur(acteur);
 	}
 }
 
 Film* lireFilm(istream& fichier, ListeFilms& listeFilms)
 {
-	Film film = {};
-	film.titre       = lireString(fichier);
-	film.realisateur = lireString(fichier);
-	film.anneeSortie = lireUint16 (fichier);
-	film.recette     = lireUint16 (fichier);
-	film.acteurs.nElements = lireUint8 (fichier);
+	Film film;
+	film.setTitre(lireString(fichier));
+	film.setRealisateur(lireString(fichier));
+	film.setAnneeSortie(lireUint16 (fichier));
+	film.setRecette(lireUint16 (fichier));
+	film.setActeurs(lireUint8 (fichier));
 
 	Film* filmp = new Film(film); //NOTE: On aurait normalement fait le "new" au début de la fonction pour directement mettre les informations au bon endroit; on le fait ici pour que le code ci-dessus puisse être directement donné aux étudiants dans le TD2 sans qu'ils aient le "new" déjà écrit.  On aurait alors aussi un nom "film" pour le pointeur, pour suivre le guide de codage; on a mis un suffixe "p", contre le guide de codage, pour le différencier de "film".
-	cout << "Création Film " << film.titre << endl;
-	filmp->acteurs.elements = std::unique_ptr<std::shared_ptr<Acteur>[]> elements(new std::unique_ptr<Acteur>[50]);
+	cout << "Création Film " << film.getTitre() << endl;
+	filmp->setActeurs(std::unique_ptr<std::shared_ptr<Acteur>[]> elements(new std::unique_ptr<Acteur>[50]));
 
-	for (Acteur*& acteur : spanListeActeurs(filmp->acteurs)) {
+	for (Acteur*& acteur : spanListeActeurs(filmp->getActeurs())) {
 		acteur = lireActeur(fichier, listeFilms);
-		acteur->joueDans.ajouterFilm(filmp);
+		acteur->getJoueDans().ajouterFilm(filmp);
 	}
 	return filmp;
 }
