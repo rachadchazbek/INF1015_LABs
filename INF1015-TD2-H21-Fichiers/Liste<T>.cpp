@@ -15,9 +15,9 @@ public:
     }
     T getElement(int index); // Returns an element. Should access the element with indedx in the shared pointer array.
     void addElement(T element, int index); // Add an element. Should take a shared pointer of the element and add it the array of shared pointer. Should also check for the array capacity. If is full should call doubleCapacity().
-    void modifyElement(T element, int index);
+    void modifyElement(T element, int index); // Modify an element by changing the element that the pointers points at.
 
-    Liste(const Liste &obj) {
+    Liste(const Liste &obj) { // Copie COnstructor, permits Liste<string> listeTextes2 = listeTextes;
         this->capacity = obj.capacity;
         this->nElements = obj.nElements;
         this->elements = make_unique<std::shared_ptr<T>[]>(capacity);
@@ -33,13 +33,13 @@ private:
 };
 
 
-template<typename T>  // Getter of elements.
+template<typename T>  // Getter of element.
 T Liste<T>::getElement(int index) {
     cout<< *elements[index] <<endl;
     return *elements[index];
 }
 
-template<typename T> // Adder of an element in the list elements.
+template<typename T> // Adder of an element in the list elements. Creates a new shared ptr to the the element and moves it into the index of the old ptr
 void Liste<T>::addElement(T element, int index) {
     auto ptr = make_shared<T>(element);
     elements[index] = move(ptr);
