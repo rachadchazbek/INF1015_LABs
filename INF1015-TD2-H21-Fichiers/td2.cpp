@@ -315,39 +315,8 @@ void afficherActeur(const Acteur& acteur)
 	cout << "  " << acteur.nom << ", " << acteur.anneeNaissance << " " << acteur.sexe << endl;
 }
 
-// Fonction pour afficher un film avec tous ces acteurs (en utilisant la fonction afficherActeur ci-dessus).
-//[
-void afficherFilm(const Film& film)
-{
-	cout << "Titre: " << film.titre << endl;
-	cout << "  Réalisateur: " << film.realisateur << "  Année :" << film.anneeSortie << endl;
-	cout << "  Recette: " << film.recette << "M$" << endl;
 
-	cout << "Acteurs:" << endl;
-	for (const Acteur* acteur : spanListeActeurs(film.acteurs))
-		afficherActeur(*acteur);
-}
 //]
-
-void afficherListeFilms(const ListeFilms& listeFilms)
-{
-	static const string ligneDeSeparation = //[
-		"\033[32m────────────────────────────────────────\033[0m\n";
-	cout << ligneDeSeparation;
-	for (const Film* film : listeFilms.enSpan()) {
-		afficherFilm(*film);
-		cout << ligneDeSeparation;
-	}
-}
-
-void afficherFilmographieActeur(const ListeFilms& listeFilms, const string& nomActeur)
-{
-	const Acteur* acteur = listeFilms.trouverActeur(nomActeur);
-	if (acteur == nullptr)
-		cout << "Aucun acteur de ce nom" << endl;
-	else
-		afficherListeFilms(acteur->joueDans);
-}
 
 // CHAP 10 // retourne 1 si le critère est vrai sur le film que on passe en paramètre.
 // si recette = 995 milions de dollars, return bool : 1.
