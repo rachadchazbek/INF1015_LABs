@@ -13,11 +13,11 @@ public:
         nElements = 0;
         elements = make_unique<std::shared_ptr<T>[]>(capacity);
     }
-    T getElement(int index); // Returns an element. Should access the element with indedx in the shared pointer array.
-    void addElement(T element, int index); // Add an element. Should take a shared pointer of the element and add it the array of shared pointer. Should also check for the array capacity. If is full should call doubleCapacity().
-    void modifyElement(T element, int index); // Modify an element by changing the element that the pointers points at.
+    T getElement(int index); // Retourne un élément. Devrait accéder l'élément avec l'index de l'array des shared pointers.
+    void addElement(T element, int index); // Ajouter un élément. Devrait prendre en parametre un shared pointer et le mettre dans l'array de shared pointers. Devrait aussi vérifier la capacité de l'array. Si l'array est remplit il faudrait call doubleCapacity().
+    void modifyElement(T element, int index); // Modifie un élément.
 
-    Liste(const Liste &obj) { // Copie COnstructor, permits Liste<string> listeTextes2 = listeTextes;
+    Liste(const Liste &obj) { // Copie Constructor, permits Liste<string> listeTextes2 = listeTextes;
         this->capacity = obj.capacity;
         this->nElements = obj.nElements;
         this->elements = make_unique<std::shared_ptr<T>[]>(capacity);
@@ -28,25 +28,25 @@ public:
 
 private:
     int capacity, nElements; 
-    unique_ptr<shared_ptr<T>[]> elements;// Unique pointer to an array of shared pointers. Each shared pointer, points to an Element.
-    void doubleCapacity();// Should double the array of shared pointers capacity. Should be private.
+    unique_ptr<shared_ptr<T>[]> elements;// Unique pointer d'une array de shared pointers. Chaque shared pointer, pointe vers un element.
+    void doubleCapacity();// Permet de doubler la capcité des shared pointers. Devrait etre privé.
 };
 
 
-template<typename T>  // Getter of element.
+template<typename T>  // Getter de element dans la liste elements.
 T Liste<T>::getElement(int index) {
     cout<< *elements[index] <<endl;
     return *elements[index];
 }
 
-template<typename T> // Adder of an element in the list elements. Creates a new shared ptr to the the element and moves it into the index of the old ptr
+template<typename T> // Ajout de un élément dans la liste elements Create. Crée un nouveau shared ptr dans elements et le met dans l'index spécifié par l'index de l'ancien ptr. 
 void Liste<T>::addElement(T element, int index) {
     auto ptr = make_shared<T>(element);
     elements[index] = move(ptr);
     nElements = nElements + 1;
 }
 
-template<typename T> // Modifier of an element in the list elements.
+template<typename T> // Modificateur d'un élément de la liste elements.
 void Liste<T>::modifyElement(T element, int index) {
     *elements[index] = element;
 }
@@ -54,7 +54,7 @@ void Liste<T>::modifyElement(T element, int index) {
 struct Point { double x,y; };
 
 int main() {
-    // Implementation of the class Liste.
+    // Implementation de la classe Liste.
     Liste<string> listeTextes;
     listeTextes.addElement("this is string 1", 0);
     listeTextes.addElement("this is string 2", 1);
