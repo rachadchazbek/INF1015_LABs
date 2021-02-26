@@ -25,7 +25,7 @@ public:
 	void detruire(bool possedeLesFilms);
 	Film* operator[](const int& i); // surcharge d'opérateur pour []
 	bool trouver(Film f, const function<bool(Film)>& critere );
-	int& getNElements() const {return nElements;} // getter de nElements
+	int getNElements() const {return nElements;} // getter de nElements
         Film** getElements() const {return elements;} // getter de elements
 	
 private:
@@ -40,7 +40,7 @@ class ListeActeurs {
 public : 
 	ListeActeurs();
 	ListeActeurs(int capacite, int nElements, std::unique_ptr<std::shared_ptr<Acteur>[]> element);
-        std::unique_ptr<std::shared_ptr<Acteur>[]> getElements() const {return move(elements);} // getter de elements
+        std::unique_ptr<std::shared_ptr<Acteur>[]> getElements() {return move(elements);} // getter de elements
 	void setElements(std::unique_ptr<std::shared_ptr<Acteur>[]> s) {elements = move(s);} // setter de elements
 	
 private:
@@ -73,7 +73,7 @@ public :
 	void setTitre(string s) {titre = s;} // setter de titre
         string getTitre() const {return titre;} // getter de titre
         void setActeurs(ListeActeurs s) {acteurs = move(s);} //setter de acteurs
-        ListeActeurs getActeurs() const {return move(acteurs);} // getter de acteurs
+        ListeActeurs getActeurs() {return move(acteurs);} // getter de acteurs
         Film(const Film &obj); // copy-constructor
 	int getRecette() const {return recette;} // getter de la recette
 
