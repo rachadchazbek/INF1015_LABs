@@ -152,6 +152,17 @@ bool ListeFilms::trouver(Film f, const function<bool(Film)>& critere)
 }
 //]
 
+// Fonction pour détruire une ListeFilms et tous les films qu'elle contient.
+//[
+//NOTE: La bonne manière serait que la liste sache si elle possède, plutôt qu'on le dise au moment de la destruction, et que ceci soit le destructeur.  Mais ça aurait complexifié le TD2 de demander une solution de ce genre, d'où le fait qu'on a dit de le mettre dans une méthode.
+void ListeFilms::detruire(bool possedeLesFilms)
+{
+	if (possedeLesFilms)
+		for (Film* film : enSpan())
+			detruireFilm(film);
+	delete[] elements;
+}
+//]
 
 // Méthodes de la classe Film 
 //[
@@ -226,7 +237,7 @@ Acteur::Acteur(string nom, int anneeNaissance, char sexe, ListeFilms joueDans)
 Acteur* lireActeur(istream& fichier, ListeFilms& listeFilms)
 {
 	Acteur acteur;
-	acteur.setNom(lireString(fichier));
+	acteur.setNom(lireString (fichier));
 	acteur.setAnneeNaissance(lireUint16 (fichier));
 	acteur.setSexe(lireUint8  (fichier));
 
@@ -276,43 +287,13 @@ ListeFilms creerListe(string nomFichier)
 
 // Fonctions pour détruire un film (relâcher toute la mémoire associée à ce film, et les acteurs qui ne jouent plus dans aucun films de la collection).  Enlève aussi le film détruit des films dans lesquels jouent les acteurs.  Pour fins de débogage, les noms des acteurs sont affichés lors de leur destruction.
 //[
-void detruireActeur(Acteur* acteur)
-{
-	cout << "Destruction Acteur " << acteur->nom << endl;
-	acteur->joueDans.detruire();
-	delete acteur;
-}
-
-bool joueEncore(const Acteur* acteur)
-{
-	return acteur->joueDans.size() != 0;
-}
 
 void detruireFilm(Film* film)
 {
-	for (Acteur* acteur : spanListeActeurs(film->acteurs)) {
-	        acteur->joueDans.enleverFilm(film);
-		if (!joueEncore(acteur))
-			detruireActeur(acteur);
-	}
-	cout << "Destruction Film " << film->titre << endl;
-	delete[] film->acteurs.elements;
+	cout << "Destruction Film " << film->getTitre() << endl;
 	delete film;
 } 
 //]
-
-// Fonction pour détruire une ListeFilms et tous les films qu'elle contient.
-//[
-//NOTE: La bonne manière serait que la liste sache si elle possède, plutôt qu'on le dise au moment de la destruction, et que ceci soit le destructeur.  Mais ça aurait complexifié le TD2 de demander une solution de ce genre, d'où le fait qu'on a dit de le mettre dans une méthode.
-void ListeFilms::detruire(bool possedeLesFilms)
-{
-	if (possedeLesFilms)
-		for (Film* film : enSpan())
-			detruireFilm(film);
-	delete[] elements;
-}
-//]
-
 
 // CHAP 10 // retourne 1 si le critère est vrai sur le film que on passe en paramètre.
 // si recette = 995 milions de dollars, return bool : 1.
