@@ -182,7 +182,7 @@ ostream& operator<<(ostream& os, const Film& film)
 //]
 
 //[
-// copy-constructor de notre classe
+// copy constructor de notre classe
 Film::Film(const Film &obj) 
 {
    this->titre = obj.titre;
@@ -351,8 +351,8 @@ void afficherFilmographieActeur(const ListeFilms& listeFilms, const string& nomA
 
 // CHAP 10 // retourne 1 si le critère est vrai sur le film que on passe en paramètre.
 // si recette = 995 milions de dollars, return bool : 1.
-Film func(ListeFilms listeFilms) {                          // on passe tout les films de listeFilms dans notre méthode "trouver".
-            for (int i = 0; i < listeFilms.getNElements() ;++i) {
+Film critery(ListeFilms listeFilms) {                          // on passe tout les films de listeFilms dans notre méthode "trouver".
+            for (int i = 0; i < listeFilms.getNElements() ; ++i) {
                 bool position = listeFilms.trouver(*(*(listeFilms.getElements() + i)), [](auto v) { if (v.getRecette() == 995) {return 1;} else {return 0;};});
     
             if (position) {return (*(*(listeFilms.getElements() + i))); break;}
@@ -373,7 +373,7 @@ int main()
 	
 	// Chapitre 10 
 	// return film si recette = 995, sachant que l'opérateur "cout <<" est surchargé pour la classe Film pour affiché le titre du film.
-	cout << func(listeFilms);
+	cout << critery(listeFilms);
 	
 	cout << ligneDeSeparation << "Le premier film de la liste est:" << endl;
 	// Le premier film de la liste.  Devrait être Alien.
@@ -436,12 +436,9 @@ int main()
 	listeFilms.enleverFilm(nullptr); // Enlever un film qui n'est pas dans la liste (clairement que nullptr n'y est pas).
 	
 	Acteur* acteur = listeFilms.trouverActeur("N'existe pas");
-	if  (acteur == nullptr) 
-	{
+	if  (acteur == nullptr) {
 	        cout << "Aucun acteur de ce nom";
-	} 
-	else 
-	{ 
+	} else { 
 		cout << ligneDeSeparation << "Les films sont:";
 	        // Affiche la liste des films. 
 	        for (int i = 0; i < acteur->getJoueDans().getNElements(); ++i) {
