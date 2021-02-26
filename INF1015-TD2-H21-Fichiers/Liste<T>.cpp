@@ -8,7 +8,7 @@ using namespace std;
 template<typename T>
 class Liste {
 public:
-    Liste()  { // default Constructeur
+    Liste()  { // défault Constructeur
         capacity = 100;
         nElements = 0;
         elements = make_unique<std::shared_ptr<T>[]>(capacity);
