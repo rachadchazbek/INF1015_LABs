@@ -25,8 +25,8 @@ public:
 	void detruire(bool possedeLesFilms);
 	Film* operator[](const int& i); // surcharge d'opérateur pour []
 	bool trouver(Film f, const function<bool(Film)>& critere );
-	const int& getNElements() {return nElements;} // getter de nElements
-        Film** getElements() {return elements;} // getter de elements
+	int& getNElements() const {return nElements;} // getter de nElements
+        Film** getElements() const {return elements;} // getter de elements
 	
 private:
 	// les atributs de la classe
@@ -40,7 +40,7 @@ class ListeActeurs {
 public : 
 	ListeActeurs();
 	ListeActeurs(int capacite, int nElements, std::unique_ptr<std::shared_ptr<Acteur>[]> element);
-        std::unique_ptr<std::shared_ptr<Acteur>[]> getElements() {return move(elements);} // getter de elements
+        std::unique_ptr<std::shared_ptr<Acteur>[]> getElements() const {return move(elements);} // getter de elements
 	void setElements(std::unique_ptr<std::shared_ptr<Acteur>[]> s) {elements = move(s);} // setter de elements
 	
 private:
@@ -71,11 +71,11 @@ public :
 	Film(string titre, string realisateur, ListeActeurs acteurs); // constructeur de notre classe
 	friend ostream& operator<<(ostream& os, const Film& film); // surcharge d'opérateur de cout
 	void setTitre(string s) {titre = s;} // setter de titre
-        string getTitre() {return titre;} // getter de titre
+        string getTitre() const{return titre;} // getter de titre
         void setActeurs(ListeActeurs s) {acteurs = move(s);} //setter de acteurs
-        ListeActeurs getActeurs() {return move(acteurs);} // getter de acteurs
+        ListeActeurs getActeurs() const {return move(acteurs);} // getter de acteurs
         Film(const Film &obj); // copy-constructor
-	int getRecette() {return recette;} // getter de la recette
+	int getRecette() const {return recette;} // getter de la recette
 
 private :
 	std::string titre, realisateur; // Titre et nom du réalisateur (on suppose qu'il n'y a qu'un réalisateur).
@@ -90,8 +90,8 @@ public :
 	Acteur(); // constructeur par défaut de notre classe 
 	Acteur(string nom, int anneeNaissance, char sexe, ListeFilms joueDans); // constructeur de notre classe
 	void setNom(string s) {nom = s;} // setter de nom
-        const string& getNom() {return nom;} // getter de nom
-	ListeFilms getJoueDans() {return joueDans;} // getter de joueDans
+        string getNom() const {return nom;} // getter de nom
+	ListeFilms getJoueDans() const {return joueDans;} // getter de joueDans
 	void setAnneeNaissance(int s) {anneeNaissance = s;} // setter de anneeNaissance
 
 private :
