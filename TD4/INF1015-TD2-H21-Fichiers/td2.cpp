@@ -370,6 +370,11 @@ int main()
 	static const string ligneDeSeparation = "\n\033[35m════════════════════════════════════════\033[0m\n";
 
 	ListeFilms listeFilms = creerListe("films.bin");
+	vector<*Item> items;
+	for (int i = 0; i < listeFilms.getNElements() < ++i) {
+		items.push_back(*(listeFilms.getElements() + i));
+	}
+	
 	
 	// Chapitre 10 
 	// return film si recette = 995, sachant que l'opérateur "cout <<" est surchargé pour la classe Film pour affiché le titre du film.
