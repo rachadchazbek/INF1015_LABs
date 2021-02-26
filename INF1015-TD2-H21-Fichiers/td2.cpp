@@ -310,13 +310,6 @@ void ListeFilms::detruire(bool possedeLesFilms)
 }
 //]
 
-void afficherActeur(const Acteur& acteur)
-{
-	cout << "  " << acteur.nom << ", " << acteur.anneeNaissance << " " << acteur.sexe << endl;
-}
-
-
-//]
 
 // CHAP 10 // retourne 1 si le critère est vrai sur le film que on passe en paramètre.
 // si recette = 995 milions de dollars, return bool : 1.
@@ -340,6 +333,26 @@ int main()
 
 	ListeFilms listeFilms = creerListe("films.bin");
 	
+	// Chapitre 9
+	// Implementation de la classe Liste.
+        Liste<string> listeTextes;
+        listeTextes.addElement("this is string 1", 0);
+        listeTextes.addElement("this is string 2", 1);
+   
+        Liste<string> listeTextes2 = listeTextes;
+    
+        listeTextes.addElement("this is string 4", 0);
+        listeTextes.modifyElement("this is string 3", 1);
+
+        cout<< " ListeTextes[0] : ";
+        listeTextes.getElement(0);
+        cout<< " ListeTextes[1] : ";
+        listeTextes.getElement(1);
+        cout<< " ListeTextes2[0] : ";
+        listeTextes2.getElement(0);
+        cout<< " ListeTextes2[1] : ";
+        listeTextes2.getElement(1);
+    
 	// Chapitre 10 
 	// return film si recette = 995, sachant que l'opérateur "cout <<" est surchargé pour la classe Film pour affiché le titre du film.
 	cout << critery(listeFilms);
