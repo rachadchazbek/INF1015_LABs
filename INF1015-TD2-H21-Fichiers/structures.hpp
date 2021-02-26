@@ -56,10 +56,10 @@ ListeActeurs::ListeActeurs() {
 }
 
 // constructeur de notre classe
-ListeActeurs::ListeActeurs(int capacite, int nElements, std::unique_ptr<std::shared_ptr<Acteur>[]>element) {
+ListeActeurs::ListeActeurs(int capacite, int nElements, std::unique_ptr<std::shared_ptr<Acteur>[]>elements) {
 	this->capacite = capacite;
 	this->nElements = nElements;
-	this->elements = move(element);
+	this->elements = move(elements);
 }
 
 
@@ -71,7 +71,7 @@ public :
 	Film(string titre, string realisateur, ListeActeurs acteurs); // constructeur de notre classe
 	friend ostream& operator<<(ostream& os, const Film& film); // surcharge d'opérateur de cout
 	void setTitre(string s) {titre = s;} // setter de titre
-        string getTitre() const{return titre;} // getter de titre
+        string getTitre() const {return titre;} // getter de titre
         void setActeurs(ListeActeurs s) {acteurs = move(s);} //setter de acteurs
         ListeActeurs getActeurs() const {return move(acteurs);} // getter de acteurs
         Film(const Film &obj); // copy-constructor
