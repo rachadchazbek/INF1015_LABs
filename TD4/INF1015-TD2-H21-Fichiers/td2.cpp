@@ -166,7 +166,8 @@ FilmLivre::FilmLivre(Film* film, Livre* livre) {
 	this->Film::annee = film->getAnnee();
 	this->realisateur = film->getRealisateur();
 	this->recette = film->getRecette();
-	this->acteurs = film->acteurs;
+	ListeActeurs act(film->acteurs);
+	this->acteurs = move(act);
 	this->auteur = livre->getAuteur();
 	this->nbCopiesVendues = livre->getNbCopiesVendues();
 	this->nbPages = livre->getNbPages();
