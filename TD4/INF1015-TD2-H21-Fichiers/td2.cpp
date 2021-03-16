@@ -1,19 +1,22 @@
+// Solutionnaire du TD3 INF1015 hiver 2021
 // Par Francois-R.Boyer@PolyMtl.ca
 
 #pragma region "Includes"//{
 #define _CRT_SECURE_NO_WARNINGS // On permet d'utiliser les fonctions de copies de chaînes qui sont considérées non sécuritaires.
 
-#include "structures_solutionnaire_td2_3.hpp"      // Structures de données pour la collection de films en mémoire.
+#include "td4.hpp"      // Structures de données pour la collection de films en mémoire.
 
 #include "bibliotheque_cours.hpp"
 #include "verification_allocation.hpp" // Nos fonctions pour le rapport de fuites de mémoire.
 
 #include <iostream>
-#include <memory>
 #include <fstream>
 #include <string>
 #include <limits>
 #include <algorithm>
+#include <sstream>
+#include <vector>   
+#include <memory>
 #include "cppitertools/range.hpp"
 #include "gsl/span"
 #include "debogage_memoire.hpp"        // Ajout des numéros de ligne des "new" dans le rapport de fuites.  Doit être après les include du système, qui peuvent utiliser des "placement new" (non supporté par notre ajout de numéros de lignes).
@@ -50,14 +53,13 @@ string lireString(istream& fichier)
 
 #pragma endregion//}
 
-
-// Méthodes de la classe ListeFilms.
+// Fonctions pour ajouter un Film à une ListeFilms.
 //[
 void ListeFilms::changeDimension(int nouvelleCapacite)
 {
 	Film** nouvelleListe = new Film*[nouvelleCapacite];
 	
-	if (elements != nullptr) {  // Noter que ce test n'est pas nécessaire puique nElements sera zéro si elements est nul, donc la boucle ne tentera pas de faire de copie, et on a le droit de faire delete sur un pointeur nul (ça ne fait rien).
+	if (elements != nullptr) {  // Noter que ce test n'est pas nécessaire puique nElements_ sera zéro si elements_ est nul, donc la boucle ne tentera pas de faire de copie, et on a le droit de faire delete sur un pointeur nul (ça ne fait rien).
 		nElements = min(nouvelleCapacite, nElements);
 		for (int i : range(nElements))
 			nouvelleListe[i] = elements[i];
@@ -96,15 +98,13 @@ void ListeFilms::enleverFilm(const Film* film)
 
 // Fonction pour trouver un Acteur par son nom dans une ListeFilms, qui retourne un pointeur vers l'acteur, ou nullptr si l'acteur n'est pas trouvé.  Devrait utiliser span.
 //[
-// Voir la NOTE ci-dessous pourquoi Acteur* n'est pas const.  Noter que c'est valide puisque c'est la struct uniquement qui est const dans le paramètre, et non ce qui est pointé par la struct.
-span<Acteur*> spanListeActeurs(const ListeActeurs& liste) { return span(liste.elements, liste.nElements); }
 
-//NOTE: Doit retourner un Acteur modifiable, sinon on ne peut pas l'utiliser pour modifier l'acteur tel que demandé dans le main, et on ne veut pas faire écrire deux versions aux étudiants dans le TD2.
-Acteur* ListeFilms::trouverActeur(const string& nomActeur) const
+//NOTE: Doit retourner un Acteur modifiable, sinon on ne peut pas l'utiliser pour modifier l'acteur tel que demandé dans le main, et on ne veut pas faire écrire deux versions.
+shared_ptr<Acteur> ListeFilms::trouverActeur(const string& nomActeur) const
 {
 	for (const Film* film : enSpan()) {
-		for (Acteur* acteur : spanListeActeurs(film->acteurs)) {
-			if (acteur->nom == nomActeur)
+		for (const shared_ptr<Acteur>& acteur : film->acteurs.enSpan()) {
+			if (acteur->getNom() == nomActeur)
 				return acteur;
 		}
 	}
@@ -112,86 +112,70 @@ Acteur* ListeFilms::trouverActeur(const string& nomActeur) const
 }
 //]
 
-//[
-// constructeur par défaut de notre classe ListeFilms
-ListeFilms::ListeFilms() 
-{
-    this->capacite = 1;    
-    this->nElements = 0;
-    this->elements = nullptr;
+//constructeur par defaut de la classe Item
+Item::Item() {
+	this->titre = "";
+	this->annee = 0;
 }
-//]
 
-//[
-// le constructeur de notre classe ListeFilms
-ListeFilms::ListeFilms(int capa, int nElem, Film** elem) 
-{
-	this->capacite = capa;
-	this->nElements = nElem;
-	this->elements = elem;
+// destructeur de la classe Item
+Item::~Item() {
+	cout << "Appel au destructeur de Item. " << "\n";
 }
-//]
-
-//[
-// surcharge d'opérateur pour []
-Film* ListeFilms::operator[](const int& i)
-{
-	return (*(elements + i));   // cet opérateur nous retourne un pointeur de Film de tel sorte que on peut écrire : Film nomFilm = *listeFilms[i] 
-                                    // pour la section Chapitres 7 – 8 du TD3
-}
-//]
-
-//[
-//  chercher un film en lui passant une lambda pour indiquer le critère
-bool ListeFilms::trouver(Film f, const function<bool(Film)>& critere)
-{
-      return critere(move(f));
-}
-//]
-
 
 // Méthodes de la classe Film 
 //[
 // constructeur par défaut de notre classe
 Film::Film()
 {
- this->titre = "";
- this->realisateur = "";
- ListeActeurs listeActeurs;
- this->acteurs = move(listeActeurs);
- }
+	this->titre = "";
+	this->annee = 0;
+	this->realisateur = "";
+	this->recette = 0;
+	ListeActeurs listeActeurs;
+	this->acteurs = move(listeActeurs);
+}
+
+// destructeur de notre classe Film
+Film::~Film() {
+	cout << "Appel au destructeur de Film. " << "\n";
+}
+//[
+
+//[
+// constructeur par defaut de la classe Livre
+Livre::Livre() {
+	this->titre = "";
+	this->annee = 0;
+	this->auteur = "";
+	this->nbCopiesVendues = 0;
+	this->nbPages = 0;
+}
+
+// destructeur de notre classe Livre
+Livre::~Livre() {
+	cout << "Appel au destructeur de Livre. " << "\n";
+}
 //]
 
+// Méthodes de la classe FilmLivre
 //[
 // constructeur de notre classe
-Film::Film(string titre, string realisateur, ListeActeurs acteurs) 
-{
-this->titre = titre;
-this->realisateur = realisateur;
-this->acteurs = move(acteurs);
+FilmLivre::FilmLivre(Film* film, Livre* livre) {
+	this->Film::titre = film->getTitre();
+	this->Film::annee = film->getAnnee();
+	this->realisateur = film->getRealisateur();
+	this->recette = film->getRecette();
+	this->acteurs = film->acteurs;
+	this->auteur = livre->getAuteur();
+	this->nbCopiesVendues = livre->getNbCopiesVendues();
+	this->nbPages = livre->getNbPages();
+}
+// destructeur de la classe FilmLivre
+FilmLivre::~FilmLivre() {
+	cout << "Appel au destructeur de FilmLivre. " << "\n";
 }
 //]
-
-//[
-// surcharge d'opérateur de cout
-ostream& operator<<(ostream& os, const Film& film)
-{
-	os << film.titre << " ";
-	return os;                  // l'opérateur "cout <<" nous retourne le titre du Film en question, pour la section Chapitre 7 : du TD3
-}
-//]
-
-//[
-// copy constructor de notre classe
-Film::Film(const Film &obj) 
-{
-   this->titre = obj.titre;
-   this->realisateur = obj.realisateur;
-   this->anneeSortie = obj.anneeSortie;
-   this->recette = obj.recette;
-}
-//]
-
 
 // Méthodes de la classe Acteurs
 //[
@@ -204,9 +188,7 @@ Acteur::Acteur()
 	ListeFilms ListeFilms;
 	this->joueDans = ListeFilms;
 }
-//]
 
-//[
 // constructeur de notre classe Acteurs
 Acteur::Acteur(string nom, int anneeNaissance, char sexe, ListeFilms joueDans)
 {
@@ -217,43 +199,40 @@ Acteur::Acteur(string nom, int anneeNaissance, char sexe, ListeFilms joueDans)
 }
 //]
 
-
 // Les fonctions pour lire le fichier et créer/allouer une ListeFilms.
 
-Acteur* lireActeur(istream& fichier, ListeFilms& listeFilms)
+shared_ptr<Acteur> lireActeur(istream& fichier, const ListeFilms& listeFilms)
 {
 	Acteur acteur = {};
-	acteur.nom            = lireString(fichier);
-	acteur.anneeNaissance = lireUint16 (fichier);
-	acteur.sexe           = lireUint8  (fichier);
+	acteur.setNom(lireString(fichier));
+	acteur.setAnneeNaissance(lireUint16(fichier));
+	acteur.setSexe(lireUint8(fichier));
 
-	Acteur* acteurExistant = listeFilms.trouverActeur(acteur.nom);
+	shared_ptr<Acteur> acteurExistant = listeFilms.trouverActeur(acteur.getNom());
 	if (acteurExistant != nullptr)
 		return acteurExistant;
 	else {
-		cout << "Création Acteur " << acteur.nom << endl;
-		return new Acteur(acteur);
+		cout << "Création Acteur " << acteur.getNom() << endl;
+		return make_shared<Acteur>(move(acteur));  // Le move n'est pas nécessaire mais permet de transférer le texte du nom sans le copier.
 	}
 }
 
 Film* lireFilm(istream& fichier, ListeFilms& listeFilms)
 {
-	Film film = {};
-	film.titre       = lireString(fichier);
-	film.realisateur = lireString(fichier);
-	film.anneeSortie = lireUint16 (fichier);
-	film.recette     = lireUint16 (fichier);
-	film.acteurs.nElements = lireUint8 (fichier);
+	Film* film = new Film;
+	film->setTitre(lireString(fichier));
+	film->setRealisateur(lireString(fichier));
+	film->setAnnee(lireUint16(fichier));
+	film->setRecette(lireUint16(fichier));
+	auto nActeurs = lireUint8(fichier);
+	film->setActeurs(ListeActeurs(nActeurs));  // On n'a pas fait de méthode pour changer la taille d'allocation, seulement un constructeur qui prend la capacité.  Pour que cette affectation fonctionne, il faut s'assurer qu'on a un operator= de move pour ListeActeurs.
+	cout << "Création Film " << film->getTitre() << endl;
 
-	Film* filmp = new Film(film); //NOTE: On aurait normalement fait le "new" au début de la fonction pour directement mettre les informations au bon endroit; on le fait ici pour que le code ci-dessus puisse être directement donné aux étudiants dans le TD2 sans qu'ils aient le "new" déjà écrit.  On aurait alors aussi un nom "film" pour le pointeur, pour suivre le guide de codage; on a mis un suffixe "p", contre le guide de codage, pour le différencier de "film".
-	cout << "Création Film " << film.titre << endl;
-	filmp->acteurs.elements = std::unique_ptr<std::shared_ptr<Acteur>[]> elements(new std::unique_ptr<Acteur>[50]);
-
-	for (Acteur*& acteur : spanListeActeurs(filmp->acteurs)) {
-		acteur = lireActeur(fichier, listeFilms);
-		acteur->joueDans.ajouterFilm(filmp);
+	for ([[maybe_unused]] auto i : range(nActeurs)) {  // On peut aussi mettre nElements_ avant et faire un span, comme on le faisait au TD précédent.
+		film->acteurs.ajouter(lireActeur(fichier, listeFilms));
 	}
-	return filmp;
+
+	return film;
 }
 
 ListeFilms creerListe(string nomFichier)
@@ -271,33 +250,6 @@ ListeFilms creerListe(string nomFichier)
 	return listeFilms;
 }
 
-// Fonctions pour détruire un film (relâcher toute la mémoire associée à ce film, et les acteurs qui ne jouent plus dans aucun films de la collection).  Enlève aussi le film détruit des films dans lesquels jouent les acteurs.  Pour fins de débogage, les noms des acteurs sont affichés lors de leur destruction.
-//[
-void detruireActeur(Acteur* acteur)
-{
-	cout << "Destruction Acteur " << acteur->nom << endl;
-	acteur->joueDans.detruire();
-	delete acteur;
-}
-
-bool joueEncore(const Acteur* acteur)
-{
-	return acteur->joueDans.size() != 0;
-}
-
-void detruireFilm(Film* film)
-{
-	for (Acteur* acteur : spanListeActeurs(film->acteurs)) {
-	        acteur->joueDans.enleverFilm(film);
-		if (!joueEncore(acteur))
-			detruireActeur(acteur);
-	}
-	cout << "Destruction Film " << film->titre << endl;
-	delete[] film->acteurs.elements;
-	delete film;
-} 
-//]
-
 // Fonction pour détruire une ListeFilms et tous les films qu'elle contient.
 //[
 //NOTE: La bonne manière serait que la liste sache si elle possède, plutôt qu'on le dise au moment de la destruction, et que ceci soit le destructeur.  Mais ça aurait complexifié le TD2 de demander une solution de ce genre, d'où le fait qu'on a dit de le mettre dans une méthode.
@@ -305,60 +257,11 @@ void ListeFilms::detruire(bool possedeLesFilms)
 {
 	if (possedeLesFilms)
 		for (Film* film : enSpan())
-			detruireFilm(film);
+			delete film;
 	delete[] elements;
 }
 //]
 
-void afficherActeur(const Acteur& acteur)
-{
-	cout << "  " << acteur.nom << ", " << acteur.anneeNaissance << " " << acteur.sexe << endl;
-}
-
-// Fonction pour afficher un film avec tous ces acteurs (en utilisant la fonction afficherActeur ci-dessus).
-//[
-void afficherFilm(const Film& film)
-{
-	cout << "Titre: " << film.titre << endl;
-	cout << "  Réalisateur: " << film.realisateur << "  Année :" << film.anneeSortie << endl;
-	cout << "  Recette: " << film.recette << "M$" << endl;
-
-	cout << "Acteurs:" << endl;
-	for (const Acteur* acteur : spanListeActeurs(film.acteurs))
-		afficherActeur(*acteur);
-}
-//]
-
-void afficherListeFilms(const ListeFilms& listeFilms)
-{
-	static const string ligneDeSeparation = //[
-		"\033[32m────────────────────────────────────────\033[0m\n";
-	cout << ligneDeSeparation;
-	for (const Film* film : listeFilms.enSpan()) {
-		afficherFilm(*film);
-		cout << ligneDeSeparation;
-	}
-}
-
-void afficherFilmographieActeur(const ListeFilms& listeFilms, const string& nomActeur)
-{
-	const Acteur* acteur = listeFilms.trouverActeur(nomActeur);
-	if (acteur == nullptr)
-		cout << "Aucun acteur de ce nom" << endl;
-	else
-		afficherListeFilms(acteur->joueDans);
-}
-
-// CHAP 10 // retourne 1 si le critère est vrai sur le film que on passe en paramètre.
-// si recette = 995 milions de dollars, return bool : 1.
-Film critery(ListeFilms listeFilms) {                          // on passe tout les films de listeFilms dans notre méthode "trouver".
-            for (int i = 0; i < listeFilms.getNElements() ; ++i) {
-                bool position = listeFilms.trouver(*(*(listeFilms.getElements() + i)), [](auto v) { if (v.getRecette() == 995) {return 1;} else {return 0;};});
-    
-            if (position) {return (*(*(listeFilms.getElements() + i))); break;}
-            }
-            return (*(*(listeFilms.getElements())));
-        }
 
 int main()
 {
@@ -370,90 +273,141 @@ int main()
 	static const string ligneDeSeparation = "\n\033[35m════════════════════════════════════════\033[0m\n";
 
 	ListeFilms listeFilms = creerListe("films.bin");
-	vector<*Item> items;
-	for (int i = 0; i < listeFilms.getNElements() < ++i) {
-		items.push_back(*(listeFilms.getElements() + i));
+	
+	// nouveau vecteur items
+	vector <Item*> items;
+	// mettre les elements de listeFilms dans le vecteur items
+	for (int i = 0; i < listeFilms.size(); ++i) {
+		Film* film = listeFilms[i];
+		Item* itemf = dynamic_cast<Item*>(film);
+		items.push_back(itemf);
 	}
-	
-	
-	// Chapitre 10 
-	// return film si recette = 995, sachant que l'opérateur "cout <<" est surchargé pour la classe Film pour affiché le titre du film.
-	cout << critery(listeFilms);
-	
+
+	// mettre les livres dans livres.txt dans le vecteur items
+	fstream file;
+	string word, filename;
+	vector <string> vect;  // vecteur dans lequel on va mettre tout les éléments de livres.txt
+	filename = "livres.txt";
+
+	// opening file 
+	file.open(filename.c_str());
+	string ini = "";
+	bool crit = 0;
+	bool crite = 0;
+
+	// ce code permet de mettre dans un vecteur vect tout les 25 éléments contenue dans la liste livres.txt, donc le premier élément de vect serait le titre du premier livre, puis le second élément 
+	// 	   sera l'année de celui ci et ainsi de suite
+	//[
+	while (file >> word) {   // pour chaque mot qui sont séparé par un espace dans le texte
+		crite = 0;
+		for (int i = 1; i < word.size(); ++i) {      // si le mot contient ", crite = 0
+			if (word[i] == '"') { crit = 0; ini += word; crite = 1; break; }
+		}
+		if (word[0] == '"' or crit == 1)   // si le premier élément du mot = ", ou crit = 1, rajouter le mot dans ini
+		{
+			ini += word;
+			ini += " ";
+			crit = 1;
+
+		}
+		else if (crite != 1)    // si crite != 1, push back le mot dans le vecteur
+		{
+			vect.push_back(word);
+		}
+		  
+		if (crit == 0 and ini.size() > 1) {   // si crit == 0 et ini.size() > 1, push back ini dans le vecteur
+			ini.erase(remove(ini.begin(), ini.end(), '"'), ini.end());  // enlever les guillemets dans ini
+			vect.push_back(ini);
+			ini = "";   // initialiser ini
+		}
+	}
+	//] 
+	// ce code permet de prendre tout les élément de vect, puis de créer des nouveaux livres avec
+	for (int i = 0; i < 25; i = i + 5) {   // créer cinq nouveau livres, avec les éléments que on viens de stocker dans le vecteur vect
+		Livre* livre = new Livre;
+		livre->setTitre(vect[i]);
+		livre->setAnnee(stoi(vect[i + 1]));
+		livre->setAuteur(vect[i + 2]);
+		livre->setNbCopiesVendues(stoi(vect[i + 3]));
+		livre->setNbPages(stoi(vect[i + 4]));
+		Item* iteml = dynamic_cast<Item*>(livre);
+		items.push_back(iteml);                     // push back le nouveau livre dans items
+	}
+
+	// Question 4 du TD, convertir en FilmListe le film et le livre The Hobbit.
+	int j;
+	Film* film;
+	Livre* livre;
+	for (int i = 0; i < items.size(); ++i) {   // comme dans la structure de items, les films sont avant les livres, on chercher d'abord le film dont le titre est "The Hobbit"
+		if (items[i]->getTitre() == "The Hobbit") {
+			Film* film = dynamic_cast<Film*>(items[i]);
+			j = i;                                        // on garde en mémoire la position du film, afin de plus tard commencer la recherche du livre a partir de la position i + 1
+			break;
+		}
+	}
+	for (int i = j + 1; i < items.size(); ++i) {  // on cherche ensuite le livre, a partir de la position i + 1
+		if (items[i]->getTitre() == "The Hobbit") {
+			Livre* livre = dynamic_cast<Livre*>(items[i]);
+			break;
+		}
+	}
+
+	FilmLivre* hobbit = new FilmLivre(film, livre);  // appel au constructeur de FilmLivre
+	Item* item = dynamic_cast<Item*>(hobbit);
+	items.push_back(item);                           // on push back dans items ce nouveau FilmLivre
+
+	// affichage du premier film
 	cout << ligneDeSeparation << "Le premier film de la liste est:" << endl;
 	// Le premier film de la liste.  Devrait être Alien.
-	cout << *(*((listeFilms.getElements())));
+	cout << *items[0];
 
 	cout << ligneDeSeparation << "Les films sont:" << endl;
 	// Affiche la liste des films.  Il devrait y en avoir 7.
-	for (int i = 0; i < listeFilms.getNElements(); ++i) {
-	        cout << *(*((listeFilms.getElements()) + i)) << " ";
+	for (int i = 0; i < listeFilms.size(); ++i) {   // i < listeFilms.size() car on veut chercher que les films dans items et pas les livre, et le nombre de film que on avait ajouté dans items = listeFilms.size()
+		cout << *items[i] << " ";
 	}
 
-	listeFilms.trouverActeur("Benedict Cumberbatch")->setAnneeNaissance(1976); // trouver acteur avec le nom "Benedict Cumberbatch".
-
-	cout << ligneDeSeparation << "Liste des films où Benedict Cumberbatch joue sont:" << endl;  
-	// Affiche la liste des films où Benedict Cumberbatch joue.  Il devrait y avoir Le Hobbit et Le jeu de l'imitation.
-	for (int i = 0; i < ((listeFilms.trouverActeur("Benedict Cumberbatch"))->getJoueDans()).getNElements(); ++ i) {
-	        cout << *(*(((listeFilms.trouverActeur("Benedict Cumberbatch"))->getJoueDans()).getElements() + i));
-	}
-	
-	// CHAP 7 - 8
-	//[
-        Film skylien = *(listeFilms[0]);
-	// copier le pointeur du premier acteur de listeFilms vers le premier acteur de la liste de skylien.
-	
-        ListeActeurs act;
-        act = skylien.getActeurs();       // pointeur vers la liste d'Acteurs du film Skylien.
-	
-        ListeActeurs acte;
-        acte = ((listeFilms[1])->getActeurs());     // pointeur vers la liste d'Acteurs du film listeFilms[1].
-	
-        std::unique_ptr<std::shared_ptr<Acteur>[]> ele;
-        ele = (act.getElements());                        // pointeur vers une liste de pointeurs de Films de la ListeActeurs du film skylien.
-	
-        std::unique_ptr<std::shared_ptr<Acteur>[]> elem;
-        elem = ((acte).getElements());                     // pointeur vers une liste de pointeurs de Films de la ListeActeurs du film listeFilms[1].
- 
-        (ele)[0] = (elem)[0]; 
-	// modifier le nom du premier acteur chez skylien, ce qui va aussi le  modifier celui de listeFilms[1], vu que on a copié le pointeur.
-        (ele)[0]->setNom("Daniel Wroughton Craig");
-	// pour chacun des films : skylien et listeFilms[1], afficher titre et afficher nom du premier acteur.
-        cout << "Nom du Film : " << ((listeFilms[0]))->getTitre() << ", premier acteur du Film :  " << ((ele)[0])->getNom() << " ";
-        cout << "Nom du Film : " << ((listeFilms[1]))->getTitre() << ", premier acteur du Film :  " << ((elem)[0])->getNom();
-        
-        act.setElements(move(ele));
-        skylien.setActeurs(move(act));
-        acte.setElements(move(elem));
-        listeFilms[1]->setActeurs(move(acte));
-        //]
-	
-	// Détruit et enlève le premier film de la liste (Alien). 
-	delete listeFilms[0];
-         
-        // afiche la nouvelle liste de films.
-	cout << ligneDeSeparation << "Les films sont maintenant:" << endl;
-	for (int i = 0; i < listeFilms.getNElements(); ++i) {
-	        cout << *(*((listeFilms.getElements()) + i)) << " ";
-	}
-
-	// Pour une couverture avec 0% de lignes non exécutées: 
-	listeFilms.enleverFilm(nullptr); // Enlever un film qui n'est pas dans la liste (clairement que nullptr n'y est pas).
-	
-	Acteur* acteur = listeFilms.trouverActeur("N'existe pas");
-	if  (acteur == nullptr) {
-	        cout << "Aucun acteur de ce nom";
-	} else { 
-		cout << ligneDeSeparation << "Les films sont:";
-	        // Affiche la liste des films. 
-	        for (int i = 0; i < acteur->getJoueDans().getNElements(); ++i) {
-		        cout << *(*((acteur->getJoueDans().getElements()) + i)) << " "; 
+	// changer date de naissance de Benedict Cumberbatch
+	for (int i = 0; i < listeFilms.size(); ++i) {
+		Film* p = dynamic_cast<Film*>(items[i]);
+		if ((p->acteurs)[i]->getNom() == "Benedict Cumberbatch") {
+			(p->acteurs)[i]->setAnneeNaissance(1976);
 		}
 	}
-		
-	//afficherFilmographieActeur(listeFilms, "N'existe pas"); // Afficher les films d'un acteur qui n'existe pas.
 
-	// Détruire tout avant de terminer le programme. 
-	listeFilms.detruire(true);
+	// Détruit et enlève le premier film de la liste (Alien).
+	delete items[0];
+	/*listeFilms.enleverFilm(p);*/
+	int nombreFilms = listeFilms.size() - 1;
+
+	// on affiche la liste de films dans items
+	cout << ligneDeSeparation << "Les films sont maintenant:" << endl;
+	// Affiche la liste des films.  Il devrait y en avoir 7.
+	for (int i = 0; i < nombreFilms; ++i) {        // comme nous avons enlever un film le nombre de films, sont maintenant = listeFilms.size() - 1
+		cout << *items[i] << " ";
+	}
+
+	// on affiche la liste des Films dans lequel Bennedict Cumberbatch joue
+	cout << ligneDeSeparation << "Liste des films où Benedict Cumberbatch joue sont:" << endl;
+	for (int i = 0; i < nombreFilms; ++i) {
+		Film* p = dynamic_cast<Film*>(items[i]);
+		if ((p->acteurs)[i]->getNom() == "Benedict Cumberbatch") {
+			for (int i = 0; i < (p->acteurs)[i]->getJoueDans().size(); ++i) {
+				cout << *((p->acteurs)[i]->getJoueDans()[i]);
+			}
+		}
+	}
+
+	// Pour une couverture avec 0% de lignes non exécutées:
+	for (int i = 0; i < nombreFilms; ++i) {
+		if (items[i] == nullptr) {                    // Enlever un film qui n'est pas dans la liste (clairement que nullptr n'y est pas).
+			delete items[i];
+		}
+	}
+
+	// Détruire tout avant de terminer le programme.
+	for (int i = 0; items.size(); ++i) {
+		delete items[i];
+	}
 	return 0;
 }
