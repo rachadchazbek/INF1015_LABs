@@ -13,7 +13,10 @@
 #include <fstream>
 #include <string>
 #include <limits>
+#include <cassert>
+#include <functional>
 #include <algorithm>
+#include<forward_list> 
 #include <sstream>
 #include <vector>   
 #include <memory>
@@ -263,6 +266,40 @@ void ListeFilms::detruire(bool possedeLesFilms)
 }
 //]
 
+// fonction d'affichage de tout les Items du vecteur items
+template <typename T>
+void affichageItems(T conteneur) {
+	for (int i = 0; i < conteneur.size(); ++i) {
+		cout << "Titre de l'item  : " << (conteneur[i])->getTitre() << "\n";
+	}
+}
+
+// fonction qui va permettre de faire la Question 4), on retourne un pointeur vers le Film dont le titre est "The Hobbit"
+Film* filmHobbit(vector <Item*> items) {
+	int j;
+	Film* film;
+	Livre* livre;
+	for (int i = 0; i < items.size(); ++i) {   // comme dans la structure de items, les films sont avant les livres, on chercher d'abord le film dont le titre est "The Hobbit"
+		if (items[i]->getTitre() == "The Hobbit") {
+			Film* film = dynamic_cast<Film*>(items[i]);
+			return film;
+			break;
+		}
+     }
+	return nullptr;
+}
+
+// fonction qui va permettre de faire la Question 4), on retourne un pointeur vers le Livre dont le titre est "The Hobbit"
+Livre* livreHobbit(vector <Item*> items, int nombreFilms) {
+	for (int i = nombreFilms; i < items.size(); ++i) {  // on cherche ensuite le livre, a partir de la position i + 1
+		if (items[i]->getTitre() == "The Hobbit") {
+			Livre* livre = dynamic_cast<Livre*>(items[i]);
+			return livre;
+			break;
+		}
+	}
+	return nullptr;
+}
 
 int main()
 {
@@ -281,14 +318,14 @@ int main()
 	for (int i = 0; i < listeFilms.size(); ++i) {
 		Film* film = listeFilms[i];
 		Item* itemf = dynamic_cast<Item*>(film);
-		items.push_back(itemf);
+		items.push_back(itemf);                  // push back chaque film de listeFilms dans items
 	}
 
 	// mettre les livres dans livres.txt dans le vecteur items
 	fstream file;
 	string word, filename;
 	vector <string> vect;  // vecteur dans lequel on va mettre tout les éléments de livres.txt
-	filename = "livres.txt";
+	filename = "livres.txt";    // fichier que on va devoir lire 
 
 	// opening file 
 	file.open(filename.c_str());
@@ -296,7 +333,7 @@ int main()
 	bool crit = 0;
 	bool crite = 0;
 
-	// ce code permet de mettre dans un vecteur vect tout les 25 éléments contenue dans la liste livres.txt, donc le premier élément de vect serait le titre du premier livre, puis le second élément 
+	// ce code permet de mettre dans un vecteur vect tout les 25 éléments contenue dans le fichier livres.txt, donc le premier élément de vect serait le titre du premier livre, puis le second élément 
 	// 	   sera l'année de celui ci et ainsi de suite
 	//[
 	while (file >> word) {   // pour chaque mot qui sont séparé par un espace dans le texte
@@ -304,14 +341,14 @@ int main()
 		for (int i = 1; i < word.size(); ++i) {      // si le mot contient ", crite = 0
 			if (word[i] == '"') { crit = 0; ini += word; crite = 1; break; }
 		}
-		if (word[0] == '"' or crit == 1)   // si le premier élément du mot = ", ou crit = 1, rajouter le mot dans ini
+		if (word[0] == '"' or crit == 1)   // si le premier élément du mot = ", ou crit = 1, rajouter le mot dans ini, car le mot est contenue entre des guillemets
 		{
 			ini += word;
 			ini += " ";
 			crit = 1;
 
 		}
-		else if (crite != 1)    // si crite != 1, push back le mot dans le vecteur
+		else if (crite != 1)    // si crite != 1, push back le mot dans le vecteur, sa veut dire que le mot n'est pas contenue entre des guillemets, on peut le push directement dans le vecteur vect
 		{
 			vect.push_back(word);
 		}
@@ -322,8 +359,9 @@ int main()
 			ini = "";   // initialiser ini
 		}
 	}
+
 	//] 
-	// ce code permet de prendre tout les élément de vect, puis de créer des nouveaux livres avec
+	// ce code permet de prendre tout les élément de vect, puis de créer des nouveaux livres avec ceux-ci
 	for (int i = 0; i < 25; i = i + 5) {   // créer cinq nouveau livres, avec les éléments que on viens de stocker dans le vecteur vect
 		Livre* livre = new Livre;
 		livre->setTitre(vect[i]);
@@ -336,78 +374,53 @@ int main()
 	}
 
 	// Question 4 du TD, convertir en FilmListe le film et le livre The Hobbit.
-	int j;
-	Film* film;
-	Livre* livre;
-	for (int i = 0; i < items.size(); ++i) {   // comme dans la structure de items, les films sont avant les livres, on chercher d'abord le film dont le titre est "The Hobbit"
-		if (items[i]->getTitre() == "The Hobbit") {
-			Film* film = dynamic_cast<Film*>(items[i]);
-			j = i;                                        // on garde en mémoire la position du film, afin de plus tard commencer la recherche du livre a partir de la position i + 1
-			break;
-		}
-	}
-	for (int i = j + 1; i < items.size(); ++i) {  // on cherche ensuite le livre, a partir de la position i + 1
-		if (items[i]->getTitre() == "The Hobbit") {
-			Livre* livre = dynamic_cast<Livre*>(items[i]);
-			break;
-		}
-	}
-
-	FilmLivre* hobbit = new FilmLivre(film, livre);  // appel au constructeur de FilmLivre
+	Film* film = filmHobbit(items);                         // retourne un pointeur vers le film The Hobbit
+	Livre* livre = livreHobbit(items, listeFilms.size());  // retourne un pointeur vers le livre The Hobbit, on utilise listeFilms.size() comme parametre, car on veut commencer a la position listeFilms.size() (= nombre de films dans items), pour chercher le livre The Hobbit
+	FilmLivre* hobbit = new FilmLivre(film, livre);       // appel au constructeur de FilmLivre
 	Item* item = dynamic_cast<Item*>(hobbit);
-	items.push_back(item);                           // on push back dans items ce nouveau FilmLivre
+	items.push_back(item);                               //on push back dans items ce nouveau FilmLivre                         
 
-	// affichage du premier film
-	cout << ligneDeSeparation << "Le premier film de la liste est:" << endl;
-	// Le premier film de la liste.  Devrait être Alien.
-	cout << *items[0];
+	// affichage de tout les éléments dans le vecteur items
+	affichageItems(items);
 
-	cout << ligneDeSeparation << "Les films sont:" << endl;
-	// Affiche la liste des films.  Il devrait y en avoir 7.
-	for (int i = 0; i < listeFilms.size(); ++i) {   // i < listeFilms.size() car on veut chercher que les films dans items et pas les livre, et le nombre de film que on avait ajouté dans items = listeFilms.size()
-		cout << *items[i] << " ";
+	// 1.1
+	forward_list<Item*> listeCont;
+	auto it = listeCont.before_begin();
+	for (int i = 0; i < items.size(); ++i) {
+		Item* item = items[i];
+		it = listeCont.insert_after(it, item);
 	}
 
-	// changer date de naissance de Benedict Cumberbatch
-	for (int i = 0; i < listeFilms.size(); ++i) {
-		Film* p = dynamic_cast<Film*>(items[i]);
-		if ((p->acteurs)[i]->getNom() == "Benedict Cumberbatch") {
-			(p->acteurs)[i]->setAnneeNaissance(1976);
-		}
+	// 1.2
+	forward_list<Item*> listeContRev;
+	auto itr = listeContRev.before_begin();
+	for (auto& listeCont : listeCont) {
+		it = listeContRev.insert_after(itr, listeCont);
 	}
 
-	// Détruit et enlève le premier film de la liste (Alien).
-	delete items[0];
-	/*listeFilms.enleverFilm(p);*/
-	int nombreFilms = listeFilms.size() - 1;
-
-	// on affiche la liste de films dans items
-	cout << ligneDeSeparation << "Les films sont maintenant:" << endl;
-	// Affiche la liste des films.  Il devrait y en avoir 7.
-	for (int i = 0; i < nombreFilms; ++i) {        // comme nous avons enlever un film le nombre de films, sont maintenant = listeFilms.size() - 1
-		cout << *items[i] << " ";
+	// 1.3
+	forward_list<Item*> listeContN;
+	auto itre = listeContN.before_begin();
+	for (auto& listeCont : listeCont) {
+		itre = listeContN.insert_after(itre, listeCont);
 	}
 
-	// on affiche la liste des Films dans lequel Bennedict Cumberbatch joue
-	cout << ligneDeSeparation << "Liste des films où Benedict Cumberbatch joue sont:" << endl;
-	for (int i = 0; i < nombreFilms; ++i) {
-		Film* p = dynamic_cast<Film*>(items[i]);
-		if ((p->acteurs)[i]->getNom() == "Benedict Cumberbatch") {
-			for (int i = 0; i < (p->acteurs)[i]->getJoueDans().size(); ++i) {
-				cout << *((p->acteurs)[i]->getJoueDans()[i]);
-			}
-		}
+	// 1.4
+	vector <Item*> vecteurCont;
+	for (auto& listeCont : listeCont) {
+		vecteurCont.insert(vecteurCont.begin(), listeCont);
 	}
 
-	// Pour une couverture avec 0% de lignes non exécutées:
-	for (int i = 0; i < nombreFilms; ++i) {
-		if (items[i] == nullptr) {                    // Enlever un film qui n'est pas dans la liste (clairement que nullptr n'y est pas).
-			delete items[i];
-		}
+	// 1.5
+	vector <Item*> items;
+	Film* filmPremier = dynamic_cast<Film*>(items[0]);
+
+	for (auto& act : filmPremier->getActeurs()) {
+		cout << "Nom de l'acteur : " << act->getNom() << "\n";
 	}
 
 	// Détruire tout avant de terminer le programme.
-	for (int i = 0; items.size(); ++i) {
+	for (int i = 0; i < items.size(); ++i) {
 		delete items[i];
 	}
 	return 0;
