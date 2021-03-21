@@ -8,6 +8,7 @@
 #include <functional>
 #include <cassert>
 #include "gsl/span"
+#include <vector>
 using gsl::span;
 using namespace std;
 
@@ -67,6 +68,7 @@ public:
 	// Noter que ces accesseurs const permettent de modifier les éléments; on pourrait vouloir des versions const qui retournent des const shared_ptr, et des versions non const qui retournent des shared_ptr.
 	shared_ptr<T>& operator[] (int index) const { return elements_[index]; }
 	span<shared_ptr<T>> enSpan() const { return span(elements_.get(), nElements_); }
+	int size() { return nElements_; } // getter de nElements dans Liste
 
 private:
 	int capacite_ = 0, nElements_ = 0;
@@ -105,7 +107,6 @@ public:
 	void setTitre(string s) { titre = s; } // setter de titre
 	string getTitre() const { return titre; } // getter de titre
 	void setActeurs(ListeActeurs s) { acteurs = move(s); } //setter de acteurs
-	ListeActeurs getActeurs() { return move(acteurs); } // getter de acteurs
 	int getRecette() const { return recette; } // getter de la recette
 	void setRealisateur(string s) { realisateur = s; } // setter realisateur
 	void setAnnee(int s) { annee = s; } // setter anneeSortie
@@ -118,6 +119,15 @@ public:
 	}
 	~Film();   // destructeur
 	ListeActeurs acteurs;
+
+	// pour le 1.5, nouvelle metod getActeurs(), qui retourne un vecteur contenant tout les acteurs de ListeActeurs acteurs
+	vector<shared_ptr<Acteur>> getActeurs() {
+		vector <shared_ptr<Acteur>> vect;
+		for (int i = 0; i < acteurs.size(); ++i) {
+			vect.push_back(acteurs[i]);
+		}
+		return vect;
+	}
 
 protected:
 	std::string realisateur; // Titre et nom du réalisateur (on suppose qu'il n'y a qu'un réalisateur)
