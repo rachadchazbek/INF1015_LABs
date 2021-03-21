@@ -269,8 +269,8 @@ void ListeFilms::detruire(bool possedeLesFilms)
 // fonction d'affichage de tout les Items du vecteur items
 template <typename T>
 void affichageItems(T conteneur) {
-	for (int i = 0; i < conteneur.size(); ++i) {
-		cout << "Titre de l'item  : " << (conteneur[i])->getTitre() << "\n";
+	for (auto& item : conteneur) {
+		cout << "Titre de l'item  : " << (item)->getTitre() << "\n";
 	}
 }
 
@@ -300,6 +300,35 @@ Livre* livreHobbit(vector <Item*> items, int nombreFilms) {
 	}
 	return nullptr;
 }
+
+// fonction qui va permettre la Question 2), triage alphabétique
+forward_list<Item*> triageAlph(forward_list<Item*> liste, Item* item) {
+	if (liste.empty()) {
+		auto it = liste.before_begin();
+		liste.insert_after(it, item);
+	}
+	else {
+		auto it = liste.before_begin();
+		int crit = 0;
+		for (auto& items : liste) {
+			if ((item->getTitre()).compare(items->getTitre()) < 0) {
+				liste.insert_after(it, item);
+				crit = 1;
+				break;
+			}
+			++it;
+		}
+		if (crit != 1) {
+			auto before_end = liste.before_begin();
+			for (auto& _ : liste) {
+				++before_end;
+			}
+			liste.insert_after(before_end, item);
+		}
+	}
+	return liste;
+}
+
 
 int main()
 {
@@ -412,12 +441,18 @@ int main()
 	}
 
 	// 1.5
-	vector <Item*> items;
 	Film* filmPremier = dynamic_cast<Film*>(items[0]);
 
 	for (auto& act : filmPremier->getActeurs()) {
 		cout << "Nom de l'acteur : " << act->getNom() << "\n";
 	}
+
+    // 2.1
+	forward_list<Item*> listeAlph;
+	for (auto& item : listeCont) {
+		listeAlph = triageAlph(listeAlph, item);
+	}
+	affichageItems(listeAlph);
 
 	// Détruire tout avant de terminer le programme.
 	for (int i = 0; i < items.size(); ++i) {
