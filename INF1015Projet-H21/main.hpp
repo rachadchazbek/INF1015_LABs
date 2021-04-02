@@ -38,7 +38,7 @@ class Piece {
     void setIsWhite(const bool& b) {isWhite = b;}
     void setCase(Case* c) {caseP = c;}
     
-    private:
+    protected:
     bool isAlive;
     bool isWhite;
     Case* caseP;
