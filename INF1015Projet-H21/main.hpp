@@ -20,5 +20,6 @@ class Roi : public Piece {
     public:
     
     private:
+    Case case;
     
 };
