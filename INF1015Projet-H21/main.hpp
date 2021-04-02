@@ -70,6 +70,24 @@ class Roi : public Piece{
         if(abs(caseM->getY() - caseP->getY()) > 1) {
             return 0;}
         
+        if(caseM->getIsOccupied()) {
+            if (caseM->getIsOccupiedWhite()) {
+                if (isWhite) {
+                    return 0;
+                }
+                else {
+                    return 1;
+                }
+            }
+            else {
+                if (isWhite) {
+                    return 1;
+                }
+                else {
+                    return 0;
+                }
+            }
+        }
         
         return 1;
     }
