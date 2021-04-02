@@ -5,6 +5,7 @@ class Case {
     public:
     
     private:
+    int x, y;
     
 };
 
