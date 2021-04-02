@@ -44,3 +44,30 @@ class Piece {
     Case* caseP;
 };
 
+
+class Roi : public Piece{
+    public:
+    bool canMove(Case* caseM) {
+        if(caseM->getX() > 8 || caseM->getX() < 0) {
+            return 0;
+    }
+        if(caseM->getY() > 8 || caseM->getY() < 0) {
+            return 0;
+    }
+        if(abs(caseM->getX() - caseP->getX()) > 1) {
+            return 0;
+    }
+        if(abs(caseM->getY() - caseP->getY()) > 1) {
+            return 0;
+    }
+        if(caseM->getIsOccupied()) {
+            if (caseM->IsOccupiedWhite()) {
+                if (caseP->getIsWhite()) {
+                    return 0;
+                }
+             else {return 1;}
+        }
+    }
+        
+};
+
