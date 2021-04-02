@@ -92,6 +92,7 @@ class Roi : public Piece{
         return 1;
         
     }
+    
 };
 
 
