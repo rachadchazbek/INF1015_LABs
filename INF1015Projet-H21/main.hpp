@@ -47,27 +47,30 @@ class Piece {
 
 class Roi : public Piece{
     public:
-    bool canMove(Case* caseM) {
-        if(caseM->getX() > 8 || caseM->getX() < 0) {
-            return 0;
-    }
-        if(caseM->getY() > 8 || caseM->getY() < 0) {
-            return 0;
-    }
-        if(abs(caseM->getX() - caseP->getX()) > 1) {
-            return 0;
-    }
-        if(abs(caseM->getY() - caseP->getY()) > 1) {
-            return 0;
-    }
-        if(caseM->getIsOccupied()) {
-            if (caseM->IsOccupiedWhite()) {
-                if (caseP->getIsWhite()) {
-                    return 0;
-                }
-             else {return 1;}
+    Roi(bool white) {
+        isAlive = 1;
+        isWhite = 1;
+        if (white) {
+            caseP = new Case(5, 0);
+        }
+        else{
+            caseP = new Case(5,8);
         }
     }
+    bool canMove(Case* caseM) {
+        if(caseM->getX() > 8 || caseM->getX() < 0) {
+            return 0;}
         
+        if(caseM->getY() > 8 || caseM->getY() < 0) {
+            return 0;}
+        
+        if(abs(caseM->getX() - caseP->getX()) > 1) {
+            return 0;}
+        
+        if(abs(caseM->getY() - caseP->getY()) > 1) {
+            return 0;}
+        
+        
+        return 1;
 };
 
