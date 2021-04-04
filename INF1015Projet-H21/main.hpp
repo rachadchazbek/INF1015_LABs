@@ -98,3 +98,46 @@ class Roi : public Piece{
 };
 
 
+class Knight : public Piece {
+    Knight(bool isWhite) {
+        this->isWhite = isWhite;
+    }
+
+    bool canMove(Case* caseM) override {
+        int x = Math.abs(caseP->getX() - caseM->getX());
+        int y = Math.abs(caseP->getY() - caseM->getY());
+        return x * y == 2;
+    }
+};
+
+class Pion : public Piece {
+    Pion(bool isWhite) {
+        this->isWhite = isWhite;
+    }
+
+    bool canMove(Case* caseM) override{
+        if (firstMove == true) {
+            if (isWhite == true) {
+                return (caseM->getY() - caseP->getY() <= 2);
+            }
+
+            if (isWhite == false) {
+                return (caseP->getY() - caseM->getY() <= 2);
+            }
+        }
+        else {
+            if (isWhite == true) {
+                return (caseM->getY() - caseP->getY() == 1);
+            }
+            if (isWhite == false) {
+                return (caseP->getY() - caseM->getY() == 1);
+            }
+        }
+    }
+
+    private:
+        bool firstMove = true; //Bool to indicate that it is the first move or not, should be set to false when first move is made
+}
+
+
+
