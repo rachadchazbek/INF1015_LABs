@@ -38,6 +38,8 @@ class Piece {
     void setIsWhite(const bool& b) {isWhite = b;}
     void setCase(Case* c) {caseP = c;}
     
+    virtual bool canMove(case* caseM) = 0;
+    
     protected:
     bool isAlive;
     bool isWhite;
@@ -49,15 +51,15 @@ class Roi : public Piece{
     public:
     Roi(bool white) {
         isAlive = 1;
-        isWhite = 1;
-        if (white) {
+        isWhite = white;
+    /*on a pas besoin de ses 4 lignes car la creation se fait dans la classe board    if (white) {
             caseP = new Case(5, 0);
         }
         else{
             caseP = new Case(5,8);
-        }
+        } */
     }
-    bool canMove(Case* caseM) {
+    bool canMove(Case* caseM) override {
         if(caseM->getX() > 8 || caseM->getX() < 0) {
             return 0;}
         
