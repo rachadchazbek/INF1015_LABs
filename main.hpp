@@ -34,7 +34,7 @@ public:
     virtual ~Piece() {}                             // Destructeur de Piece.
     virtual char getPiece() = 0;                    // Getter de Piece, abstraite dans la classe Piece.
     char getCouleurPiece() { return couleurPiece; } // Getter de la couleur de la Piece, cette méthode étant la même dans toutes les classe qui dérivent de Piece, pas besoin qu'elle soit virtuel. Pas de besoin de l'overrride dans les classes enfantes.
-    void move(Case* caseDepart,Case* caseDestination,  Case* echiquier[8][8]);
+    void move(Case* caseDepart,Case* caseDestination,  Case* echiquier[8][8]);  // Fonction move, appliquable pour toutes les Pieces.
       
 private:
     char couleurPiece;                              // Couleur de la Piece. Blanche ou Noir.
