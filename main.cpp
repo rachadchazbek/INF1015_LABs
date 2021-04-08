@@ -132,20 +132,21 @@ Echiquier::~Echiquier()
 
 // On pourra faire nos test dans le main, tout simplement.
 int main() {
-        Echiquier e;
-    
-    if(((e.echiquier[0][4])->getPiece())->canMove(e.echiquier[0][4], e.echiquier[1][4], e.echiquier)) {
+    Echiquier e;  // Construction de l'échiquier e.
+    // Trois tests du mouvement du Roi.
+    if(((e.echiquier[0][4])->getPiece())->canMove(e.echiquier[0][4], e.echiquier[1][4], e.echiquier)) {  // Le roi est dans la position [0][4] initialement, lors de la construction de l'échiquier, on veut s'assurer si le roi peut se déplacer de une case verticalement en passant de la position [0][4] vers la position [1][4].
         std::cout << "Le premier test du Roi passe." << std::endl;
     }
-    if(((e.echiquier[0][4])->getPiece())->canMove(e.echiquier[0][4], e.echiquier[0][5], e.echiquier)) {
+    if(((e.echiquier[0][4])->getPiece())->canMove(e.echiquier[0][4], e.echiquier[0][5], e.echiquier)) {  // Le roi est dans la position [0][4] initialement, lors de la construction de l'échiquier, on veut s'assurer si le roi peut se déplacer de une case horizontalement en passant de la position [0][4] vers la position [5][0].
         std::cout << "Le second test du Roi passe." << std::endl;
     }
-    if(!((e.echiquier[0][4])->getPiece())->canMove(e.echiquier[0][4], e.echiquier[0][6], e.echiquier)) {
+    if(!((e.echiquier[0][4])->getPiece())->canMove(e.echiquier[0][4], e.echiquier[0][6], e.echiquier)) {  // On veut s'assurer que le roi ne puisse pas se déplace de deux cases.
         std::cout << "Le dernier test du Roi passe." << std::endl;
     }
     
     std::cout << "\n";
     
+    // Trois test du mouvement de la Tour.
     if(((e.echiquier[0][0])->getPiece())->canMove(e.echiquier[0][0], e.echiquier[7][0], e.echiquier)) {
         std::cout << "Le premier test de la Tour passe." << std::endl;
     }
@@ -158,6 +159,7 @@ int main() {
     
     std::cout << "\n";
     
+    // Trois tests du mouvement du Chevalier.
     if(((e.echiquier[0][1])->getPiece())->canMove(e.echiquier[0][1], e.echiquier[2][2], e.echiquier)) {
         std::cout << "Le premier test du Chevalier passe." << std::endl;
     }
