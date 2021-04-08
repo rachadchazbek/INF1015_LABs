@@ -67,7 +67,7 @@ bool Tour::canMove(Case* caseDepart, Case* caseDestination, Case* echiquier[8][8
                         dclg = -1;                                                                                     // Si ligneDestination - ligneSource < 0, la tour va descendre à travers l'échiquier pour arriver à destination, il faudrait alors décrémenter ligneSource pour arriver à destination, le dclg devrait dans ce cas être égal à -1.
                     }
                     for (int i = ligneSource + dclg; i != ligneDestination; i += dclg) {                               // Pour chaque ligne dans la colonne entre la case de départ et la case de destination, si une case != 0, en autre mots, si la case n'est pas vide, alors return false, si toutes les cases sont vides, return true.
-                        if (echiquier[i][colSource] != 0) {
+                        if ((echiquier[i][colSource])->getPiece() != 0) {
                             return false;
                         }
                     }
@@ -82,7 +82,7 @@ bool Tour::canMove(Case* caseDepart, Case* caseDestination, Case* echiquier[8][8
                         dclg = -1;                                                                                    // Si ligneDestination - ligneSource < 0, la tour va descendre horizontalement à travers l'échiquier pour arriver à destination, il faudrait alors décrémenter ligneSource pour arriver à destination, le dclg devrait dans ce cas être égal à -1.
                     } 
                     for (int i = colSource + dclg; i != colDestination; i += dclg) {                                  // Pour chaque colonne dans la ligne entre la case de départ et la case de destination, si une case != 0, en autre mots, si la case n'est pas vide, alors return false, si toutes les cases sont vides, return true.
-                        if (echiquier[ligneSource][i] != 0) {
+                        if ((echiquier[ligneSource][i])->getPiece() != 0) {
                             return false;
                         }
                     }
@@ -130,7 +130,11 @@ Echiquier::~Echiquier()
     }
 }
 
+// On pourra faire nos test dans le main, tout simplement.
 int main() {
+        Echiquier echiquier;
+        Case case = new Case(0,0);
+        Case 
 
     return 0;
 }
