@@ -33,7 +33,7 @@ private:
 class Chevalier : public Piece
 {
 public:
-    Chevalier(char couleur) : Piece(couleur) {}               // Constructeur de la classe Chevalier.
+    Chevalier(bool isWhite) : Piece( isWhite) {}               // Constructeur de la classe Chevalier.
     ~Chevalier() {}                                           // Destructeur de la classe Chevalier.
     char getPiece() { return 'C'; }                           // Getter de la Piece Chevalier.
 
@@ -45,7 +45,7 @@ private:
 class Tour : public Piece
 {
 public:
-    Tour(char couleur) : Piece(couleur) {}                   // Constructeur de la Classe Tour.
+    Tour( bool isWhite) : Piece( isWhite) {}                   // Constructeur de la Classe Tour.
     ~Tour() {}                                               // Destructeur de la classe Tour.
     char getPiece() { return 'T'; }                          // Getter de la Piece Tour.
 
