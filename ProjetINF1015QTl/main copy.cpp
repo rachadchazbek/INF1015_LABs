@@ -132,7 +132,9 @@ Echiquier::~Echiquier()
 
 // On pourra faire nos test dans le main, tout simplement.
 int main() {
+        
     Echiquier e;  // Construction de l'échiquier e.
+        
     // Quatre tests du mouvement du Roi.
     if(((e.echiquier[0][4])->getPiece())->canMove(e.echiquier[0][4], e.echiquier[1][4], e.echiquier)) {  // Le roi est dans la position [0][4] initialement, lors de la construction de l'échiquier, on veut s'assurer si le roi peut se déplacer de une case verticalement en passant de la position [0][4] vers la position [1][4].
         std::cout << "Le premier test du Roi passe." << std::endl;
@@ -146,33 +148,32 @@ int main() {
     if(((e.echiquier[0][4])->getPiece())->canMove(e.echiquier[0][4], e.echiquier[1][5], e.echiquier)) {  // Le roi est dans la position [0][4] initialement, lors de la construction de l'échiquier, on veut s'assurer si le roi peut se déplacer de une case horizontalement et verticale en passant de la position [0][4] vers la position [5][1].
         std::cout << "Le dernier test du Roi passe." << std::endl;
     }
+        
     std::cout << "\n";
     
     // Trois test du mouvement de la Tour.
-    if(((e.echiquier[0][0])->getPiece())->canMove(e.echiquier[0][0], e.echiquier[7][0], e.echiquier)) {   //Check if la Tour peut bouger horizontalement 
+    if(((e.echiquier[0][0])->getPiece())->canMove(e.echiquier[0][0], e.echiquier[7][0], e.echiquier)) {  // La tour est dans la position [0][0] initialement, lors de la construction, on veut s'assurer si la tour peut se déplacer verticalement pour manger une autre tour, en passant de la position [0][4] vers la position [7][0].
         std::cout << "Le premier test de la Tour passe." << std::endl;
     }
-    if(!((e.echiquier[0][0])->getPiece())->canMove(e.echiquier[0][0], e.echiquier[0][1], e.echiquier)) {  //La tour ne peut pas bouger vers un une case ou le chevalier est deja initialiser 
+    if(!((e.echiquier[0][0])->getPiece())->canMove(e.echiquier[0][0], e.echiquier[0][1], e.echiquier)) {  // La tour est dans la position [0][0] initialement, lors de la construction, on veut s'assurer que la tour ne peut pas se déplacer verticalement car un chevalier de la même couleur est initialisé dans la position [0][1].
         std::cout << "Le second test de la Tour passe." << std::endl;
     }
-    if(!((e.echiquier[0][0])->getPiece())->canMove(e.echiquier[0][0], e.echiquier[-1][10], e.echiquier)) { //La tour ne peut pas bouger vers une case invalide
+    if(!((e.echiquier[0][0])->getPiece())->canMove(e.echiquier[0][0], e.echiquier[-1][10], e.echiquier)) {  // On veut vérifier que la tour ne puisse pas se déplacer vers une position hors de l'échiquier.
         std::cout << "Le dernier test de la Tour passe." << std::endl;
     }
-    
-    
     
     std::cout << "\n";
     
     // Trois tests du mouvement du Chevalier.
-    if(((e.echiquier[0][1])->getPiece())->canMove(e.echiquier[0][1], e.echiquier[2][2], e.echiquier)) {   
+    if(((e.echiquier[0][1])->getPiece())->canMove(e.echiquier[0][1], e.echiquier[2][2], e.echiquier)) {  // On veut vérifier que le chevalier peut passer de la position [0][1] initial vers la position [2][2].
         std::cout << "Le premier test du Chevalier passe." << std::endl;
     }
     
-    if(((e.echiquier[0][1])->getPiece())->canMove(e.echiquier[0][1], e.echiquier[2][0], e.echiquier)) {
+    if(((e.echiquier[0][1])->getPiece())->canMove(e.echiquier[0][1], e.echiquier[2][0], e.echiquier)) {  // On veut vérifier que le chevalier peut passer de la position [0][1] initial vers la position [2][0].
         std::cout << "Le second test du Chevalier passe." << std::endl;
     }
     
-    if(!((e.echiquier[0][1])->getPiece())->canMove(e.echiquier[0][1], e.echiquier[3][0], e.echiquier)) {
+    if(!((e.echiquier[0][1])->getPiece())->canMove(e.echiquier[0][1], e.echiquier[3][0], e.echiquier)) { // On veut vérifier que le chevalier ne peut pas passer de la position [0][1] initial vers la position [3][0].
         std::cout << "Le dernier test du Chevalier passe." << std::endl;
     }
 
