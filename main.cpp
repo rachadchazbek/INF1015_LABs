@@ -133,7 +133,7 @@ Echiquier::~Echiquier()
 // On pourra faire nos test dans le main, tout simplement.
 int main() {
     Echiquier e;  // Construction de l'échiquier e.
-    // Trois tests du mouvement du Roi.
+    // Quatre tests du mouvement du Roi.
     if(((e.echiquier[0][4])->getPiece())->canMove(e.echiquier[0][4], e.echiquier[1][4], e.echiquier)) {  // Le roi est dans la position [0][4] initialement, lors de la construction de l'échiquier, on veut s'assurer si le roi peut se déplacer de une case verticalement en passant de la position [0][4] vers la position [1][4].
         std::cout << "Le premier test du Roi passe." << std::endl;
     }
@@ -141,9 +141,11 @@ int main() {
         std::cout << "Le second test du Roi passe." << std::endl;
     }
     if(!((e.echiquier[0][4])->getPiece())->canMove(e.echiquier[0][4], e.echiquier[0][6], e.echiquier)) {  // On veut s'assurer que le roi ne puisse pas se déplace de deux cases.
+        std::cout << "Le troisième test du Roi passe." << std::endl;
+    }
+    if(((e.echiquier[0][4])->getPiece())->canMove(e.echiquier[0][4], e.echiquier[1][5], e.echiquier)) {  // Le roi est dans la position [0][4] initialement, lors de la construction de l'échiquier, on veut s'assurer si le roi peut se déplacer de une case horizontalement et verticale en passant de la position [0][4] vers la position [5][1].
         std::cout << "Le dernier test du Roi passe." << std::endl;
     }
-    
     std::cout << "\n";
     
     // Trois test du mouvement de la Tour.
@@ -156,6 +158,8 @@ int main() {
     if(!((e.echiquier[0][0])->getPiece())->canMove(e.echiquier[0][0], e.echiquier[-1][10], e.echiquier)) {
         std::cout << "Le dernier test de la Tour passe." << std::endl;
     }
+    
+    
     
     std::cout << "\n";
     
