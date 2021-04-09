@@ -149,13 +149,13 @@ int main() {
     std::cout << "\n";
     
     // Trois test du mouvement de la Tour.
-    if(((e.echiquier[0][0])->getPiece())->canMove(e.echiquier[0][0], e.echiquier[7][0], e.echiquier)) {
+    if(((e.echiquier[0][0])->getPiece())->canMove(e.echiquier[0][0], e.echiquier[7][0], e.echiquier)) {   //Check if la Tour peut bouger horizontalement 
         std::cout << "Le premier test de la Tour passe." << std::endl;
     }
-    if(!((e.echiquier[0][0])->getPiece())->canMove(e.echiquier[0][0], e.echiquier[0][1], e.echiquier)) {
+    if(!((e.echiquier[0][0])->getPiece())->canMove(e.echiquier[0][0], e.echiquier[0][1], e.echiquier)) {  //La tour ne peut pas bouger vers un une case ou le chevalier est deja initialiser 
         std::cout << "Le second test de la Tour passe." << std::endl;
     }
-    if(!((e.echiquier[0][0])->getPiece())->canMove(e.echiquier[0][0], e.echiquier[-1][10], e.echiquier)) {
+    if(!((e.echiquier[0][0])->getPiece())->canMove(e.echiquier[0][0], e.echiquier[-1][10], e.echiquier)) { //La tour ne peut pas bouger vers une case invalide
         std::cout << "Le dernier test de la Tour passe." << std::endl;
     }
     
@@ -164,7 +164,7 @@ int main() {
     std::cout << "\n";
     
     // Trois tests du mouvement du Chevalier.
-    if(((e.echiquier[0][1])->getPiece())->canMove(e.echiquier[0][1], e.echiquier[2][2], e.echiquier)) {
+    if(((e.echiquier[0][1])->getPiece())->canMove(e.echiquier[0][1], e.echiquier[2][2], e.echiquier)) {   
         std::cout << "Le premier test du Chevalier passe." << std::endl;
     }
     
